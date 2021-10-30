@@ -36,7 +36,7 @@ namespace JackosAdventure.Simulation.Entities
             batch
                 .Draw(
                     texture2D,
-                    new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y),
+                    Position, Size,
                     new Rectangle(textureSizeX + gap, currentFrame * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
                     Color.White
                 );

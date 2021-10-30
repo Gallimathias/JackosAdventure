@@ -89,17 +89,25 @@ namespace JackosAdventure.Simulation.Entities
         private int currentFrame = 1;
         private int lastValue = 0;
 
+
         public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
             const int gap = 1;
 
-            batch
+            batch.Draw(
+                texture2D,
+                Position, Size,
+                new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
+                Color.White
+            );
+
+            /*batch
                 .Draw(
-                    texture2D, 
-                    new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y), 
-                    new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2), 
-                    Color.White
-                );
+                    texture2D,
+                    new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y),
+                    new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
+                    Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
+                );*/
 
             if (IsMoving)
             {
