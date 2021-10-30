@@ -1,35 +1,26 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace JackosAdventure.UI.Controls
 {
-    internal class Player : IDisposable
+    class Reaper
     {
         private readonly Texture2D texture2D;
 
         public Vector2 Position { get; set; }
-        public Vector2 Size => new Vector2(78, 108);
+        public Vector2 Size => new Vector2(3, 4);
+        public Rectangle Area { get; set; }
 
-        public bool IsMoving { get; internal set; }
-        public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
+        public bool IsMoving { get; private set; }
+        public int CurrentDirection { get; private set; }
 
-        private int currentDirection;
-
-        public Player(Texture2D texture2D)
+        public Reaper(Texture2D texture2D)
         {
             this.texture2D = texture2D;
-        }
-
-        internal void Update(GameTime gameTime)
-        {
-            
-        }
-
-        public void Dispose()
-        {
-            texture2D.Dispose();
+            Area = new Rectangle(1, 1, 20, 20);
         }
 
         private int pingPongDirection = 1;
@@ -41,7 +32,7 @@ namespace JackosAdventure.UI.Controls
             int xSize = texture2D.Width / 3;
             int ySize = (texture2D.Height / 4);
 
-            batch.Draw(texture2D, new Rectangle((int)(centerX - Size.X / 2), (int)(centerY - Size.Y / 2), (int)Size.X, (int)Size.Y), new Rectangle(currentFrame * xSize, (int)CurrentDirection * ySize, xSize, ySize), Color.White);
+            batch.Draw(texture2D, new Rectangle((int)(Position.X), (int)(Position.Y), (int)Size.X, (int)Size.Y), new Rectangle(currentFrame * xSize, (int)CurrentDirection * ySize, xSize, ySize), Color.White);
 
             if (IsMoving)
             {
@@ -68,17 +59,23 @@ namespace JackosAdventure.UI.Controls
             }
         }
 
-        public enum Direction
+        internal void Update(GameTime gameTime)
         {
-            Down = 0,
-            Left = 1,
-            Right = 2,
-            Up = 3,
+            const float speed = 4f;
+
+            var dir = 1;
+            
+            var isinarea = Area.Contains((int)Position.X, (int)Position.Y);
+            if (isinarea) { 
+                dir = 1;
+            }
+            else
+            {
+                dir = -1;
+            }
+            
+            Position += new Vector2(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
         }
 
-        public static implicit operator Player(Reaper v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

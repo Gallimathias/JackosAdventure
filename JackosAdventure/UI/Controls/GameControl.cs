@@ -13,6 +13,9 @@ namespace JackosAdventure.UI.Controls
         private readonly Camera camera;
         private readonly Player player;
         private readonly Texture2D playerTexture;
+        private Texture2D reaperTexture;
+
+        public Reaper Reaper { get; }
 
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
@@ -21,6 +24,9 @@ namespace JackosAdventure.UI.Controls
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
             player = new Player(playerTexture);
+
+            reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_3.png");
+            Reaper = new Reaper(reaperTexture);
         }
 
         public override void Update(GameTime gameTime)
@@ -68,6 +74,9 @@ namespace JackosAdventure.UI.Controls
             camera.Position += new Vector3(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             player.Position = new Vector2(camera.Position.X, camera.Position.Y);
             camera.Update();
+
+            Reaper.Update(gameTime);
+           
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -87,12 +96,15 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             //Todo npc, houses etc..
-
+            
+            Reaper.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            
             spriteBatch.End();
 
             spriteBatch.Begin();
 
             player.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            
 
             spriteBatch.End();
 
