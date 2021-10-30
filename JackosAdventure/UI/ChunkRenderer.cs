@@ -18,8 +18,7 @@ namespace JackosAdventure.UI
         {
             graphicsDevice = screenComponent.GraphicsDevice;
 
-            using var stream = File.OpenRead(Path.Combine(".", "Assets", "grass.png"));
-            grass = Texture2D.FromStream(graphicsDevice, stream);
+            grass = screenComponent.Content.Load<Texture2D>("grass.png");
             basicEffect = new BasicEffect(graphicsDevice)
             {
                 TextureEnabled = true

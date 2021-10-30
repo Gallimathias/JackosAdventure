@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace JackosAdventure.UI.Controls
+namespace JackosAdventure.Simulation.Entities
 {
     internal class Player : IDisposable
     {
@@ -66,15 +66,7 @@ namespace JackosAdventure.UI.Controls
             {
                 currentFrame = 1;
             }
-        }
-
-        public enum Direction
-        {
-            Down = 0,
-            Left = 1,
-            Right = 2,
-            Up = 3,
-        }
+        }        
 
     }
 }

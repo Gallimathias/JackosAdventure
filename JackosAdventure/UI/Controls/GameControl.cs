@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 using JackosAdventure.UI.Components;
+using JackosAdventure.Simulation.Entities;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -12,7 +13,11 @@ namespace JackosAdventure.UI.Controls
         private readonly ChunkRenderer renderer;
         private readonly Camera camera;
         private readonly Player player;
+        private readonly Witch witch;
+        private readonly Reaper reaper;
         private readonly Texture2D playerTexture;
+        private readonly Texture2D witchTexture;
+        private readonly Texture2D reaperTexture;
 
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
@@ -20,7 +25,14 @@ namespace JackosAdventure.UI.Controls
             camera = new Camera(Vector3.UnitZ);
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
+            witchTexture = screenComponent.Content.Load<Texture2D>("witch_cauldron.png");
+            reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_blade_3.png");
             player = new Player(playerTexture);
+            witch = new Witch(witchTexture);
+            reaper = new Reaper(reaperTexture);
+            witch.Position = new Vector2(30, 10);
+            reaper.Position = new Vector2(2, 7);
+            reaper.Area = new Rectangle(1, 1, 10, 10);
         }
 
         public override void Update(GameTime gameTime)
@@ -34,28 +46,28 @@ namespace JackosAdventure.UI.Controls
             {
                 dir += new Vector2(0, -1);
                 player.IsMoving = true;
-                player.CurrentDirection = Player.Direction.Up;
+                player.CurrentDirection = Direction.Up;
             }
 
             if (keyBoardState.IsKeyDown(Keys.S))
             {
                 dir += new Vector2(0, 1);
                 player.IsMoving = true;
-                player.CurrentDirection = Player.Direction.Down;
+                player.CurrentDirection = Direction.Down;
             }
 
             if (keyBoardState.IsKeyDown(Keys.A))
             {
                 dir += new Vector2(-1, 0);
                 player.IsMoving = true;
-                player.CurrentDirection = Player.Direction.Left;
+                player.CurrentDirection = Direction.Left;
             }
 
             if (keyBoardState.IsKeyDown(Keys.D))
             {
                 dir += new Vector2(1, 0);
                 player.IsMoving = true;
-                player.CurrentDirection = Player.Direction.Right;
+                player.CurrentDirection = Direction.Right;
             }
 
             if (dir.LengthSquared() > 0)
@@ -63,11 +75,15 @@ namespace JackosAdventure.UI.Controls
 
             const float speed = 4f;
 
-            player.Update(gameTime);
             camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
             camera.Position += new Vector3(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
-            player.Position = new Vector2(camera.Position.X, camera.Position.Y);
             camera.Update();
+            
+            player.Position = new Vector2(camera.Position.X, camera.Position.Y);
+            player.Update(gameTime);
+
+            witch.Update(gameTime);
+            reaper.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -86,16 +102,29 @@ namespace JackosAdventure.UI.Controls
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
-            //Todo npc, houses etc..
+            witch.Draw(gameTime, spriteBatch);
+            reaper.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 
             spriteBatch.Begin();
 
             player.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            
 
             spriteBatch.End();
 
+        }
+
+        public override void Dispose()
+        {
+            player.Dispose();
+            playerTexture.Dispose();
+            witch.Dispose();
+            witchTexture.Dispose();
+            reaperTexture.Dispose();
+            reaper.Dispose();
+            renderer.Dispose();
         }
 
         private Vector2 ScreenToWorld(Vector2 screen)
