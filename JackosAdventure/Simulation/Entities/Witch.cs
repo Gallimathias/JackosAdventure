@@ -5,41 +5,41 @@ using System;
 
 namespace JackosAdventure.Simulation.Entities
 {
-    internal class Witch : IDisposable
+    internal class Witch : Entitie
     {
         private readonly Texture2D texture2D;
-
-        public Vector2 Position { get; set; }
-        public Vector2 Size => new(2, 3);
-
-        public bool IsMoving { get; internal set; }
+        public override Vector2 Size { get; } = new(2, 3);
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
         private int currentDirection;
+        private readonly int textureSizeX;
+        private readonly int textureSizeY;
 
         public Witch(Texture2D texture2D)
         {
             this.texture2D = texture2D;
+            textureSizeX = texture2D.Width / 3;
+            textureSizeY = texture2D.Height / 4;
         }
 
-        internal void Update(GameTime gameTime)
-        {
-            
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             texture2D.Dispose();
         }
 
-        internal void Draw(GameTime gameTime, SpriteBatch batch)
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
-            int xSize = texture2D.Width / 3;
-            int ySize = (texture2D.Height / 4);
-            var currentFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 4 % 4);
-            var gap = 1;
+            const int gap = 1;
 
-            batch.Draw(texture2D, new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y), new Rectangle(xSize + gap, currentFrame * ySize + gap, xSize - gap * 2, ySize - gap * 2), Color.White);
+            var currentFrame = (int)(gameTime.TotalGameTime.TotalSeconds * 4 % 4);
+
+            batch
+                .Draw(
+                    texture2D,
+                    new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y),
+                    new Rectangle(textureSizeX + gap, currentFrame * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
+                    Color.White
+                );
         }
 
     }

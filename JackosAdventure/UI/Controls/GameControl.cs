@@ -19,6 +19,9 @@ namespace JackosAdventure.UI.Controls
         private readonly Texture2D witchTexture;
         private readonly Texture2D reaperTexture;
 
+        private Viewport currentViewport;
+        private Matrix inverseMatrix;
+
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
             renderer = new ChunkRenderer(screenComponent);
@@ -37,6 +40,16 @@ namespace JackosAdventure.UI.Controls
 
         public override void Update(GameTime gameTime)
         {
+            var deviceViewPort = GraphicsDevice.Viewport;
+            if (currentViewport.X != deviceViewPort.X
+                || currentViewport.Y != deviceViewPort.Y
+                || currentViewport.Width != deviceViewPort.Width
+                || currentViewport.Height != deviceViewPort.Height)
+            {
+                ViewPortChanged(currentViewport, deviceViewPort);
+                currentViewport = deviceViewPort;
+            }
+
             var keyBoardState = Keyboard.GetState();
 
             var dir = new Vector2(0, 0);
@@ -75,10 +88,10 @@ namespace JackosAdventure.UI.Controls
 
             const float speed = 4f;
 
-            camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
+            
             camera.Position += new Vector3(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             camera.Update();
-            
+
             player.Position = new Vector2(camera.Position.X, camera.Position.Y);
             player.Update(gameTime);
 
@@ -90,16 +103,6 @@ namespace JackosAdventure.UI.Controls
         {
             renderer.Draw(camera);
 
-            var inverseMatrix = new Matrix
-                (
-                2.0f / GraphicsDevice.Viewport.Width, 0, 0, 0,
-                0, -2.0f / GraphicsDevice.Viewport.Height, 0, 0,
-                0, 0, 1, 0,
-                 -1, 1, 0, 1
-                );
-
-            inverseMatrix = Matrix.Invert(inverseMatrix);
-
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             witch.Draw(gameTime, spriteBatch);
@@ -108,12 +111,26 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.End();
 
             spriteBatch.Begin();
-
-            player.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             
+            player.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 
+        }
+
+        private void ViewPortChanged(Viewport currentViewPort, Viewport newViewPort)
+        {
+            var inverseMatrix = new Matrix
+                (
+                2.0f / GraphicsDevice.Viewport.Width, 0, 0, 0,
+                0, -2.0f / GraphicsDevice.Viewport.Height, 0, 0,
+                0, 0, 1, 0,
+                 -1, 1, 0, 1
+                );
+
+            this.inverseMatrix = Matrix.Invert(inverseMatrix);
+            player.SetCenter(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
         }
 
         public override void Dispose()

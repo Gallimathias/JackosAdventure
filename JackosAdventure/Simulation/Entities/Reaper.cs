@@ -6,16 +6,14 @@ using System;
 
 namespace JackosAdventure.Simulation.Entities
 {
-    internal class Reaper : IDisposable
+    internal class Reaper : Entitie
     {
         private readonly Texture2D texture2D;
 
-        public Vector2 Position { get; set; }
-        public Vector2 Size => new(2, 3);
+        public override Vector2 Size { get; } = new(2, 3);
 
         public Rectangle Area { get; set; }
 
-        public bool IsMoving { get; internal set; }
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
         private int currentDirection;
@@ -24,34 +22,39 @@ namespace JackosAdventure.Simulation.Entities
 
         private readonly Random random;
 
+        private readonly int textureSizeX;
+        private readonly int textureSizeY;
+
         public Reaper(Texture2D texture2D)
         {
             this.texture2D = texture2D;
             random = new Random();
+
+            textureSizeX = texture2D.Width / 3;
+            textureSizeY = texture2D.Height / 4;
         }
 
         private double waitingSeconds;
         private bool isWaiting;
 
-        internal void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             const float speed = 4f;
             Vector2 direction = default;
-            //Position += new Vector2(1, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
             switch (CurrentDirection)
             {
                 case Direction.Down:
-                    direction = new Vector2(0, 1);
+                    direction = Vector2.UnitY;
                     break;
                 case Direction.Left:
-                    direction = new Vector2(-1, 0);
+                    direction = -Vector2.UnitX;
                     break;
                 case Direction.Right:
-                    direction = new Vector2(1, 0);
+                    direction = Vector2.UnitX;
                     break;
                 case Direction.Up:
-                    direction = new Vector2(0, -1);
+                    direction = -Vector2.UnitY;
                     break;
             }
 
@@ -62,14 +65,14 @@ namespace JackosAdventure.Simulation.Entities
                 IsMoving = true;
                 Position = newPosition;
             }
-            else if(!isWaiting)
+            else if (!isWaiting)
             {
                 IsMoving = false;
                 waitingSeconds = gameTime.TotalGameTime.TotalSeconds + 10;
                 isWaiting = true;
             }
 
-            if(gameTime.TotalGameTime.TotalSeconds > waitingSeconds && isWaiting)
+            if (gameTime.TotalGameTime.TotalSeconds > waitingSeconds && isWaiting)
             {
                 CurrentDirection = (Direction)random.Next(0, 4);
                 isWaiting = false;
@@ -77,7 +80,7 @@ namespace JackosAdventure.Simulation.Entities
 
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             texture2D.Dispose();
         }
@@ -86,13 +89,17 @@ namespace JackosAdventure.Simulation.Entities
         private int currentFrame = 1;
         private int lastValue = 0;
 
-        internal void Draw(GameTime gameTime, SpriteBatch batch)
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
-            int xSize = texture2D.Width / 3;
-            int ySize = (texture2D.Height / 4);
-            var gap = 1;
+            const int gap = 1;
 
-            batch.Draw(texture2D, new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y), new Rectangle(currentFrame * xSize + gap, (int)CurrentDirection * ySize + gap, xSize - gap * 2, ySize - gap * 2), Color.White);
+            batch
+                .Draw(
+                    texture2D, 
+                    new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y), 
+                    new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2), 
+                    Color.White
+                );
 
             if (IsMoving)
             {

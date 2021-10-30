@@ -5,29 +5,30 @@ using System;
 
 namespace JackosAdventure.Simulation.Entities
 {
-    internal class Player : IDisposable
+    internal class Player : Entitie
     {
         private readonly Texture2D texture2D;
 
-        public Vector2 Position { get; set; }
-        public Vector2 Size => new(78, 108);
+        public override Vector2 Size { get; } = new Vector2(78, 108);
 
-        public bool IsMoving { get; internal set; }
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
         private int currentDirection;
 
+        private readonly int textureSizeX;
+        private readonly int textureSizeY;
+
+        private Point center;
+
         public Player(Texture2D texture2D)
         {
             this.texture2D = texture2D;
+
+            textureSizeX = texture2D.Width / 3;
+            textureSizeY = texture2D.Height / 4;
         }
 
-        internal void Update(GameTime gameTime)
-        {
-            
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             texture2D.Dispose();
         }
@@ -36,12 +37,20 @@ namespace JackosAdventure.Simulation.Entities
         private int currentFrame = 1;
         private int lastValue = 0;
 
-        internal void Draw(GameTime gameTime, SpriteBatch batch, int centerX, int centerY)
+        public void SetCenter(int centerX, int centerY)
         {
-            int xSize = texture2D.Width / 3;
-            int ySize = (texture2D.Height / 4);
+            center = new Point(centerX, centerY);
+        }
 
-            batch.Draw(texture2D, new Rectangle((int)(centerX - Size.X / 2), (int)(centerY - Size.Y / 2), (int)Size.X, (int)Size.Y), new Rectangle(currentFrame * xSize, (int)CurrentDirection * ySize, xSize, ySize), Color.White);
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
+        {
+            batch
+                .Draw(
+                    texture2D, 
+                    new Rectangle((int)(center.X - Size.X / 2), (int)(center.Y - Size.Y / 2), (int)Size.X, (int)Size.Y), 
+                    new Rectangle(currentFrame * textureSizeX, (int)CurrentDirection * textureSizeY, textureSizeX, textureSizeY), 
+                    Color.White
+                );
 
             if (IsMoving)
             {
@@ -66,7 +75,7 @@ namespace JackosAdventure.Simulation.Entities
             {
                 currentFrame = 1;
             }
-        }        
+        }
 
     }
 }
