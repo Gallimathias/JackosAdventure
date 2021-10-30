@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+﻿using JackosAdventure.UI.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.IO;
-using JackosAdventure.UI.Components;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -13,10 +11,10 @@ namespace JackosAdventure.UI.Controls
         private readonly Camera camera;
         private readonly Player player;
         private readonly Texture2D playerTexture;
-        private readonly NPC_Witch witch;
         private readonly Texture2D witchTexture;
-        private Texture2D reaperTexture;
+        private readonly Texture2D reaperTexture;
 
+        private readonly NPC_Witch witch;
         public Reaper Reaper { get; }
 
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
@@ -34,7 +32,7 @@ namespace JackosAdventure.UI.Controls
             reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_3.png");
             Reaper = new Reaper(reaperTexture);
         }
-       
+
         public override void Update(GameTime gameTime)
         {
             var keyBoardState = Keyboard.GetState();
@@ -88,7 +86,7 @@ namespace JackosAdventure.UI.Controls
             camera.Update();
 
             Reaper.Update(gameTime);
-           
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -108,18 +106,15 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             //Todo npc, houses etc..
+
             witch.Draw(gameTime, spriteBatch, (int)witch.Position.X, (int)witch.Position.Y);
-
-
-            
             Reaper.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-            
+
             spriteBatch.End();
 
             spriteBatch.Begin();
 
             player.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-            
 
             spriteBatch.End();
 

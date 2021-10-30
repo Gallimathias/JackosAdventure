@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JackosAdventure.UI.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;
-using JackosAdventure.UI.Components;
 
 namespace JackosAdventure.UI
 {

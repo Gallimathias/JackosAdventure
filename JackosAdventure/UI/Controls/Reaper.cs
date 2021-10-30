@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace JackosAdventure.UI.Controls
@@ -64,16 +61,17 @@ namespace JackosAdventure.UI.Controls
             const float speed = 4f;
 
             var dir = 1;
-            
+
             var isinarea = Area.Contains((int)Position.X, (int)Position.Y);
-            if (isinarea) { 
+            if (isinarea)
+            {
                 dir = 1;
             }
             else
             {
                 dir = -1;
             }
-            
+
             Position += new Vector2(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
         }
 

@@ -1,29 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <FNANative Include="FNA\x64\**\*" Visible="False"></FNANative>
-    <Assets Include="Assets\**\*" />
-  </ItemGroup>
+	<ItemGroup>
+		<FNANative Include="FNA\x64\**\*" Visible="False"></FNANative>
+		<Assets Include="Assets\**\*" />
+	</ItemGroup>
 
-  <Target Name="CopyNativLibs" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(FNANative)" DestinationFolder="$(OutDir)" />
-  </Target>
+	<Target Name="CopyNativLibs" AfterTargets="AfterBuild">
+		<Copy SourceFiles="@(FNANative)" DestinationFolder="$(OutDir)" />
+	</Target>
 
-  <Target Name="CopyAssets" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)\Assets\%(RecursiveDir)"></Copy>
-  </Target>
+	<Target Name="CopyAssets" AfterTargets="AfterBuild">
+		<Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)\Assets\%(RecursiveDir)"></Copy>
+	</Target>
 
-  <ItemGroup>
-    <None Remove="FNA\**\*" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="FNA\**\*" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
@@ -31,8 +31,8 @@
 	</ItemGroup>
 
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\FNA\FNA.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\FNA\FNA.csproj" />
+	</ItemGroup>
 
 </Project>

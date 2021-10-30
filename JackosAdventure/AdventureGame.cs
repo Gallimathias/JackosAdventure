@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JackosAdventure.UI.Components;
+using Microsoft.Xna.Framework;
 using System;
-using JackosAdventure.UI.Components;
 
 namespace JackosAdventure
 {
@@ -20,7 +20,7 @@ namespace JackosAdventure
 
             Content.RootDirectory = "Assets";
 
-            Disposed += (s,e) => OnDisposed();
+            Disposed += (s, e) => OnDisposed();
         }
 
         protected override void Initialize()

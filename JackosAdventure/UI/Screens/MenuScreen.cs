@@ -1,16 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+﻿using JackosAdventure.UI.Components;
+using JackosAdventure.UI.Controls;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Velentr.Font;
-using JackosAdventure.UI.Components;
-using JackosAdventure.UI.Controls;
 
 namespace JackosAdventure.UI.Screens
 {
@@ -40,7 +34,7 @@ namespace JackosAdventure.UI.Screens
             font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "Halls___.ttf"), 80);
             text = font.MakeText("Jackos Adventure");
 
-            
+
             backgroundSong = screenComponent.Content.Load<Song>(@"music\Twin Musicom - Spooky Ride.ogg");
             MediaPlayer.Play(backgroundSong);
             MediaPlayer.IsRepeating = true;

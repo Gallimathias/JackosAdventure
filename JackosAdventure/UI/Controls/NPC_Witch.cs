@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Velentr.Font;
@@ -19,12 +18,13 @@ namespace JackosAdventure.UI.Controls
 
         private int currentDirection;
 
-        private Text firstText;  
+        private Text firstText;
         private Font font;
 
-        public NPC_Witch(Texture2D texture2D)
+        public NPC_Witch(Texture2D texture2D, Font font)
         {
             this.texture2D = texture2D;
+            this.font = font;
         }
 
         internal void Update(GameTime gameTime)

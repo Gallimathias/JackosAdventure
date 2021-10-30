@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JackosAdventure.UI.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using JackosAdventure.UI.Components;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -26,7 +26,7 @@ namespace JackosAdventure.UI.Controls
         {
             var mouseState = Mouse.GetState();
 
-            if(mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton != ButtonState.Pressed)
+            if (mouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton != ButtonState.Pressed)
             {
                 OnLeftMouseButtonClicked(new Point(mouseState.X, mouseState.Y));
             }

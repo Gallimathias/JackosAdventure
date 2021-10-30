@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -24,7 +23,7 @@ namespace JackosAdventure.UI.Controls
 
         internal void Update(GameTime gameTime)
         {
-            
+
         }
 
         public void Dispose()
