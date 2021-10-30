@@ -13,6 +13,8 @@ namespace JackosAdventure.UI.Controls
         private readonly Camera camera;
         private readonly Player player;
         private readonly Texture2D playerTexture;
+        private readonly NPC_Witch witch;
+        private readonly Texture2D witchTexture;
 
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
@@ -21,6 +23,10 @@ namespace JackosAdventure.UI.Controls
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
             player = new Player(playerTexture);
+
+            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
+            witch = new NPC_Witch(witchTexture);
+            witch.Position = new Vector2(10, 10);
         }
 
         public override void Update(GameTime gameTime)
@@ -29,6 +35,11 @@ namespace JackosAdventure.UI.Controls
 
             var dir = new Vector2(0, 0);
             player.IsMoving = false;
+
+            if (keyBoardState.IsKeyDown(Keys.E))
+            {
+                witch.Speech();
+            }
 
             if (keyBoardState.IsKeyDown(Keys.W))
             {
@@ -87,6 +98,8 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             //Todo npc, houses etc..
+
+            witch.Draw(gameTime, spriteBatch, (int)witch.Position.X, (int)witch.Position.Y);
 
             spriteBatch.End();
 

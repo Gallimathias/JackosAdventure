@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
@@ -23,10 +23,6 @@
 
 	<ItemGroup>
 		<None Remove="FNA\**\*" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Assets\fonts\" />
 	</ItemGroup>
 
 	<ItemGroup>
