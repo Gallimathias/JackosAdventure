@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Velentr.Font;
 
-
 namespace JackosAdventure.UI.Controls
 {
     internal class NPC_Witch : IDisposable
@@ -20,8 +19,7 @@ namespace JackosAdventure.UI.Controls
 
         private int currentDirection;
 
-
-        private Text firstText;
+        private Text firstText;  
         private Font font;
 
         public NPC_Witch(Texture2D texture2D)
@@ -50,13 +48,13 @@ namespace JackosAdventure.UI.Controls
 
             currentDirection = (int)(gameTime.TotalGameTime.TotalSeconds * 4 % 4);
         }
-
-
+        /// <summary>
+        /// Gibt eine Text-Nachricht auf dem Bildschirm aus.
+        /// </summary>
         public void Speech()
         {
-
+            Console.WriteLine("Test");
         }
-
 
         public enum Direction
         {

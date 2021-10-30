@@ -14,6 +14,7 @@ namespace JackosAdventure.UI.Controls
         private readonly Player player;
         private readonly NPC_Witch witch;
         private readonly Texture2D playerTexture;
+        private readonly NPC_Witch witch;
         private readonly Texture2D witchTexture;
 
 
@@ -23,11 +24,11 @@ namespace JackosAdventure.UI.Controls
             camera = new Camera(Vector3.UnitZ);
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
-            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
             player = new Player(playerTexture);
+
+            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
             witch = new NPC_Witch(witchTexture);
             witch.Position = new Vector2(10, 10);
-
         }
        
         public override void Update(GameTime gameTime)
@@ -109,7 +110,6 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin();
 
             player.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
-
 
             spriteBatch.End();
 

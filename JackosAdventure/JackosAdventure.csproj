@@ -25,18 +25,10 @@
     <None Remove="FNA\**\*" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Assets\witch2_cauldron_3.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Assets\fonts\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
-    <PackageReference Include="Velentr.Font.FNA" Version="1.2.8" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
+		<PackageReference Include="Velentr.Font.FNA" Version="1.2.8" />
+	</ItemGroup>
 
 
   <ItemGroup>
