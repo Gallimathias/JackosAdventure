@@ -12,7 +12,10 @@ namespace JackosAdventure.UI.Controls
         private readonly ChunkRenderer renderer;
         private readonly Camera camera;
         private readonly Player player;
+        private readonly NPC_Witch witch;
         private readonly Texture2D playerTexture;
+        private readonly Texture2D witchTexture;
+
 
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
@@ -20,15 +23,24 @@ namespace JackosAdventure.UI.Controls
             camera = new Camera(Vector3.UnitZ);
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
+            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
             player = new Player(playerTexture);
-        }
+            witch = new NPC_Witch(witchTexture);
+            witch.Position = new Vector2(10, 10);
 
+        }
+       
         public override void Update(GameTime gameTime)
         {
             var keyBoardState = Keyboard.GetState();
 
             var dir = new Vector2(0, 0);
             player.IsMoving = false;
+
+            if (keyBoardState.IsKeyDown(Keys.E))
+            {
+                witch.Speech();
+            }
 
             if (keyBoardState.IsKeyDown(Keys.W))
             {
@@ -64,10 +76,12 @@ namespace JackosAdventure.UI.Controls
             const float speed = 4f;
 
             player.Update(gameTime);
+            witch.Update(gameTime);
             camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
             camera.Position += new Vector3(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             player.Position = new Vector2(camera.Position.X, camera.Position.Y);
             camera.Update();
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -87,12 +101,15 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             //Todo npc, houses etc..
+            witch.Draw(gameTime, spriteBatch, (int)witch.Position.X, (int)witch.Position.Y);
+
 
             spriteBatch.End();
 
             spriteBatch.Begin();
 
             player.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+
 
             spriteBatch.End();
 
