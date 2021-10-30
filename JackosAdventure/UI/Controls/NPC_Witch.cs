@@ -2,29 +2,34 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using Velentr.Font;
 
 namespace JackosAdventure.UI.Controls
 {
-    internal class Player : IDisposable
+    internal class NPC_Witch : IDisposable
     {
         private readonly Texture2D texture2D;
 
         public Vector2 Position { get; set; }
-        public Vector2 Size => new Vector2(78, 108);
+        public Vector2 Size => new Vector2(2, 3);
 
         public bool IsMoving { get; internal set; }
+
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
         private int currentDirection;
 
-        public Player(Texture2D texture2D)
+        private Text firstText;  
+        private Font font;
+
+        public NPC_Witch(Texture2D texture2D)
         {
             this.texture2D = texture2D;
         }
 
         internal void Update(GameTime gameTime)
         {
-            
+            firstText = font.MakeText("Test");
         }
 
         public void Dispose()
@@ -32,9 +37,7 @@ namespace JackosAdventure.UI.Controls
             texture2D.Dispose();
         }
 
-        private int pingPongDirection = 1;
         private int currentFrame = 1;
-        private int lastValue = 0;
 
         internal void Draw(GameTime gameTime, SpriteBatch batch, int centerX, int centerY)
         {
@@ -43,29 +46,14 @@ namespace JackosAdventure.UI.Controls
 
             batch.Draw(texture2D, new Rectangle((int)(centerX - Size.X / 2), (int)(centerY - Size.Y / 2), (int)Size.X, (int)Size.Y), new Rectangle(currentFrame * xSize, (int)CurrentDirection * ySize, xSize, ySize), Color.White);
 
-            if (IsMoving)
-            {
-                var value = (int)(gameTime.TotalGameTime.TotalSeconds * 4 % 3);
-
-                if (lastValue != value)
-                {
-                    currentFrame += pingPongDirection;
-                    lastValue = value;
-                }
-
-                if (currentFrame == 2)
-                {
-                    pingPongDirection = -1;
-                }
-                else if (currentFrame == 0)
-                {
-                    pingPongDirection = 1;
-                }
-            }
-            else
-            {
-                currentFrame = 1;
-            }
+            currentDirection = (int)(gameTime.TotalGameTime.TotalSeconds * 4 % 4);
+        }
+        /// <summary>
+        /// Gibt eine Text-Nachricht auf dem Bildschirm aus.
+        /// </summary>
+        public void Speech()
+        {
+            Console.WriteLine("Test");
         }
 
         public enum Direction

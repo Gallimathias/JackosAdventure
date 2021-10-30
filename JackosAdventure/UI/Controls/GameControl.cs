@@ -13,6 +13,8 @@ namespace JackosAdventure.UI.Controls
         private readonly Camera camera;
         private readonly Player player;
         private readonly Texture2D playerTexture;
+        private readonly NPC_Witch witch;
+        private readonly Texture2D witchTexture;
         private Texture2D reaperTexture;
 
         public Reaper Reaper { get; }
@@ -25,16 +27,25 @@ namespace JackosAdventure.UI.Controls
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
             player = new Player(playerTexture);
 
+            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
+            witch = new NPC_Witch(witchTexture);
+            witch.Position = new Vector2(10, 10);
+
             reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_3.png");
             Reaper = new Reaper(reaperTexture);
         }
-
+       
         public override void Update(GameTime gameTime)
         {
             var keyBoardState = Keyboard.GetState();
 
             var dir = new Vector2(0, 0);
             player.IsMoving = false;
+
+            if (keyBoardState.IsKeyDown(Keys.E))
+            {
+                witch.Speech();
+            }
 
             if (keyBoardState.IsKeyDown(Keys.W))
             {
@@ -70,6 +81,7 @@ namespace JackosAdventure.UI.Controls
             const float speed = 4f;
 
             player.Update(gameTime);
+            witch.Update(gameTime);
             camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
             camera.Position += new Vector3(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             player.Position = new Vector2(camera.Position.X, camera.Position.Y);
@@ -96,6 +108,9 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             //Todo npc, houses etc..
+            witch.Draw(gameTime, spriteBatch, (int)witch.Position.X, (int)witch.Position.Y);
+
+
             
             Reaper.Draw(gameTime, spriteBatch, GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
             
