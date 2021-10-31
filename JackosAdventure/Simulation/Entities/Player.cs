@@ -9,7 +9,8 @@ namespace JackosAdventure.Simulation.Entities
     {
         private readonly Texture2D texture2D;
 
-        public override Vector2 Size { get; } = new Vector2(2, 3);//new Vector2(78, 108);
+        public override Vector2 Size { get; } = new Vector2(2, 3);
+
 
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
@@ -35,7 +36,8 @@ namespace JackosAdventure.Simulation.Entities
         private int currentFrame = 1;
         private int lastValue = 0;
 
-        public override void Draw(GameTime gameTime, SpriteBatch batch)
+
+        public void Draw(GameTime gameTime, SpriteBatch batch)
         {
             batch.Draw(
                 texture2D,

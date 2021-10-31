@@ -13,7 +13,7 @@ namespace JackosAdventure.UI.Components
 {
     internal abstract class ScreenGameComponent : DrawableGameComponent
     {
-        public FontManager Fonts { get;  }
+        public FontManager Fonts { get; }
 
         public ContentManager Content => Game.Content;
 
@@ -23,7 +23,7 @@ namespace JackosAdventure.UI.Components
         public ScreenGameComponent(Game game) : base(game)
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Fonts = new FontManager(GraphicsDevice);            
+            Fonts = new FontManager(GraphicsDevice);
         }
 
         public void NavigateTo(Control control)

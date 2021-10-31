@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace JackosAdventure.MapEditor
@@ -18,15 +12,29 @@ namespace JackosAdventure.MapEditor
 
             foreach (var type in editor.Map.TileTypes)
             {
-                itemSelectionBox.Items.Add(type);
+                selectionItemBox.Items.Add(type);
             }
 
-            itemSelectionBox.SelectedIndexChanged += SelectionChanged;
+            selectionItemBox.SelectedIndexChanged += SelectionChanged;
         }
 
         private void SelectionChanged(object? sender, EventArgs e)
         {
-            editor.CurrentTypeSelection = (string)itemSelectionBox.SelectedItem;
+            editor.CurrentTypeSelection = (string)selectionItemBox.SelectedItem;
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            var dialog = new SaveFileDialog();
+            dialog.FileName = "graveyard.map";
+            dialog.Title = "Save map";
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                using var fileStream = File.OpenWrite(dialog.FileName);
+                using var writer = new BinaryWriter(fileStream);
+                editor.Map.Serialize(writer);
+            }
         }
     }
 }

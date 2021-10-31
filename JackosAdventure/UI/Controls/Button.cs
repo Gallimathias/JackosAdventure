@@ -1,13 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using JackosAdventure.UI.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Velentr.Font;
-using JackosAdventure.UI.Components;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -28,7 +24,7 @@ namespace JackosAdventure.UI.Controls
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            
+
             var x = (controlArea.Width / 2) - (text.Size.X / 2) + controlArea.X;
             var y = (controlArea.Height / 2) - (text.Size.Y / 2) + controlArea.Y + 15;
 

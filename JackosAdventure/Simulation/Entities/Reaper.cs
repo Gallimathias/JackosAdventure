@@ -10,15 +10,13 @@ namespace JackosAdventure.Simulation.Entities
     {
         private readonly Texture2D texture2D;
 
-        public override Vector2 Size { get; } = new(2, 3);
+        public override Vector2 Size { get; } = new Vector2(2, 3);
 
         public Rectangle Area { get; set; }
 
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
         private int currentDirection;
-
-        private Vector2 currentTarget;
 
         private readonly Random random;
 
@@ -28,6 +26,7 @@ namespace JackosAdventure.Simulation.Entities
         public Reaper(Texture2D texture2D)
         {
             this.texture2D = texture2D;
+            Area = new Rectangle(1, 1, 10, 10);
             random = new Random();
 
             textureSizeX = texture2D.Width / 3;
@@ -98,16 +97,12 @@ namespace JackosAdventure.Simulation.Entities
                 texture2D,
                 Position, Size,
                 new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
-                Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
+                Color.White,
+                0,
+                Vector2.Zero,
+                SpriteEffects.None,
+                (Position.Y + Size.Y) / 1000f
             );
-
-            /*batch
-                .Draw(
-                    texture2D,
-                    new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y),
-                    new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
-                    Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
-                );*/
 
             if (IsMoving)
             {

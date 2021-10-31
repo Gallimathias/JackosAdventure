@@ -1,18 +1,18 @@
-﻿
-
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace JackosAdventure.Simulation.World
 {
     public class Map
     {
-        public Tile[,] Tiles { get;   }
+        public Tile[,] Tiles { get; }
 
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public List<string> TileTypes { get;  }
+        public List<string> TileTypes { get; }
 
         public Map(int width, int height)
         {
@@ -42,9 +42,10 @@ namespace JackosAdventure.Simulation.World
             writer.Write(Height);
 
             writer.Write(TileTypes.Count);
-            foreach (var type in TileTypes)
+
+            foreach (var tileType in TileTypes)
             {
-                writer.Write(type);
+                writer.Write(tileType);
             }
 
             for (int x = 0; x < Width; x++)

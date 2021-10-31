@@ -38,7 +38,7 @@ namespace JackosAdventure.UI
         public void Update()
         {
             var offset = new Vector3(center + PlayerSize / 2f, 0);
-            View = Matrix.CreateLookAt(Position + offset, Position + offset + new Vector3(0,0, -1), Vector3.UnitY);
+            View = Matrix.CreateLookAt(Position + offset, Position + offset + new Vector3(0, 0, -1), Vector3.UnitY);
             ViewProjection = View * Projection;
         }
     }

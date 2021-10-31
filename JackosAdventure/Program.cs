@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-
-namespace JackosAdventure
+﻿namespace JackosAdventure
 {
     internal class Program
     {

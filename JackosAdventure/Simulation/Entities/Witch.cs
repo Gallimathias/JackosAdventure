@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace JackosAdventure.Simulation.Entities
 {
     internal class Witch : Entitie
     {
         private readonly Texture2D texture2D;
-        public override Vector2 Size { get; } = new(2, 3);
+        public override Vector2 Size { get; } = new Vector2(2, 3);
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
+
+        public Rectangle InteractionArea { get; set; }
 
         private int currentDirection;
         private readonly int textureSizeX;
@@ -27,6 +27,14 @@ namespace JackosAdventure.Simulation.Entities
             texture2D.Dispose();
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            //firstText = font.MakeText("Test");
+            const int gap = 1;
+
+            InteractionArea = new Rectangle((int)Position.X - gap, (int)Position.Y - gap, (int)Size.X + gap * 2, (int)Size.Y + gap * 2);
+        }
+
         public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
             const int gap = 1;
@@ -38,7 +46,11 @@ namespace JackosAdventure.Simulation.Entities
                     texture2D,
                     Position, Size,
                     new Rectangle(textureSizeX + gap, currentFrame * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
-                    Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
+                    Color.White, 
+                    0, 
+                    Vector2.Zero, 
+                    SpriteEffects.None, 
+                    (Position.Y + Size.Y) / 1000f
                 );
         }
 

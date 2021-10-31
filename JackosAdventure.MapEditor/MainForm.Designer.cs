@@ -30,7 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.editor = new JackosAdventure.MapEditor.Editor();
-            this.itemSelectionBox = new System.Windows.Forms.ListBox();
+            this.selectionItemBox = new System.Windows.Forms.ListBox();
+            this.saveButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // editor
@@ -39,26 +40,37 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.editor.Location = new System.Drawing.Point(12, 12);
             this.editor.Name = "editor";
-            this.editor.Size = new System.Drawing.Size(1027, 918);
+            this.editor.Size = new System.Drawing.Size(1001, 906);
             this.editor.TabIndex = 0;
             // 
-            // itemSelectionBox
+            // selectionItemBox
             // 
-            this.itemSelectionBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.selectionItemBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.itemSelectionBox.FormattingEnabled = true;
-            this.itemSelectionBox.ItemHeight = 20;
-            this.itemSelectionBox.Location = new System.Drawing.Point(1037, 12);
-            this.itemSelectionBox.Name = "itemSelectionBox";
-            this.itemSelectionBox.Size = new System.Drawing.Size(150, 904);
-            this.itemSelectionBox.TabIndex = 1;
+            this.selectionItemBox.FormattingEnabled = true;
+            this.selectionItemBox.ItemHeight = 20;
+            this.selectionItemBox.Location = new System.Drawing.Point(1032, 18);
+            this.selectionItemBox.Name = "selectionItemBox";
+            this.selectionItemBox.Size = new System.Drawing.Size(198, 844);
+            this.selectionItemBox.TabIndex = 1;
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(1136, 889);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(94, 29);
+            this.saveButton.TabIndex = 2;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1199, 942);
-            this.Controls.Add(this.itemSelectionBox);
+            this.ClientSize = new System.Drawing.Size(1242, 961);
+            this.Controls.Add(this.saveButton);
+            this.Controls.Add(this.selectionItemBox);
             this.Controls.Add(this.editor);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -70,6 +82,7 @@
         #endregion
 
         private Editor editor;
-        private System.Windows.Forms.ListBox itemSelectionBox;
+        private System.Windows.Forms.ListBox selectionItemBox;
+        private System.Windows.Forms.Button saveButton;
     }
 }

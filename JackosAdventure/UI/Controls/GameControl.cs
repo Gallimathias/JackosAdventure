@@ -1,10 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+﻿using JackosAdventure.Simulation.Entities;
+using JackosAdventure.Simulation.World;
+using JackosAdventure.UI.Components;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
-using JackosAdventure.UI.Components;
-using JackosAdventure.Simulation.Entities;
+using Velentr.Font;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -22,23 +23,36 @@ namespace JackosAdventure.UI.Controls
         private Viewport currentViewport;
         private Matrix inverseMatrix;
 
+        private readonly Font font;
+        private readonly Text text;
+        private bool witchInteracting;
+
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
-            renderer = new ChunkRenderer(screenComponent);
+            using var fileStream = File.OpenRead(Path.Combine(".", "Assets", "graveyard.map"));
+            using var reader = new BinaryReader(fileStream);
+            var map = Map.Deserialize(reader);
+
+            renderer = new ChunkRenderer(screenComponent, map);
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
-            witchTexture = screenComponent.Content.Load<Texture2D>("witch_cauldron.png");
-            reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_blade_3.png");
+            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
+            reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_3.png");
             player = new Player(playerTexture);
             witch = new Witch(witchTexture);
             reaper = new Reaper(reaperTexture);
             witch.Position = new Vector2(30, 10);
             reaper.Position = new Vector2(2, 7);
             reaper.Area = new Rectangle(1, 1, 10, 10);
-        
+
             camera = new Camera(Vector3.UnitZ, player.Size);
 
+            font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "golem-script.ttf"), 48);
+            text = font.MakeText("*Die Hexe lacht*");
+
         }
+
+        private double talkingTime;
 
         public override void Update(GameTime gameTime)
         {
@@ -53,6 +67,7 @@ namespace JackosAdventure.UI.Controls
             }
 
             var keyBoardState = Keyboard.GetState();
+            var isInteracting = keyBoardState.IsKeyDown(Keys.E);
 
             var dir = new Vector2(0, 0);
             player.IsMoving = false;
@@ -90,7 +105,7 @@ namespace JackosAdventure.UI.Controls
 
             const float speed = 4f;
 
-            
+
             camera.Position += new Vector3(dir, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             camera.Update();
 
@@ -98,6 +113,19 @@ namespace JackosAdventure.UI.Controls
             player.Update(gameTime);
 
             witch.Update(gameTime);
+
+            if (isInteracting && witch.InteractionArea.Contains((int)player.Position.X, (int)player.Position.Y))
+            {
+                witchInteracting = true;
+                talkingTime = gameTime.TotalGameTime.TotalSeconds + 5;
+            }
+
+            if (!witch.InteractionArea.Contains((int)player.Position.X, (int)player.Position.Y)
+                || gameTime.TotalGameTime.TotalSeconds > talkingTime)
+            {
+                witchInteracting = false;
+            }
+
             reaper.Update(gameTime);
         }
 
@@ -108,9 +136,18 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             witch.Draw(gameTime, spriteBatch);
-            reaper.Draw(gameTime, spriteBatch);            
+            reaper.Draw(gameTime, spriteBatch);
             player.Draw(gameTime, spriteBatch);
 
+            spriteBatch.End();
+
+            spriteBatch.Begin();
+            if (witchInteracting)
+            {
+                var x = GraphicsDevice.Viewport.Width / 2 - text.Width / 2;
+                var y = GraphicsDevice.Viewport.Height - text.Height - 10;
+                spriteBatch.DrawString(text, new Vector2(x, y), Color.White);
+            }
             spriteBatch.End();
 
         }

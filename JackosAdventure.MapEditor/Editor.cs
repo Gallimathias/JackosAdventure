@@ -1,12 +1,5 @@
 ﻿using JackosAdventure.Simulation.World;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace JackosAdventure.MapEditor
@@ -30,6 +23,9 @@ namespace JackosAdventure.MapEditor
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (Size.Width < 1 || Size.Height < 1)
+                return;
+
             CellWidth = Size.Width / Map.Width;
             CellHeight = Size.Height / Map.Height;
 
@@ -49,9 +45,9 @@ namespace JackosAdventure.MapEditor
                         brush.Color = color;
                     }
 
-                    var rectanle = new Rectangle(x * CellWidth, y * CellHeight, CellWidth, CellHeight);
-                    e.Graphics.FillRectangle(brush, rectanle);
-                    e.Graphics.DrawRectangle(pen, rectanle);
+                    var rectangle = new Rectangle(x * CellWidth, y * CellHeight, CellWidth, CellHeight);
+                    e.Graphics.FillRectangle(brush, rectangle);
+                    e.Graphics.DrawRectangle(pen, rectangle);
                 }
             }
 

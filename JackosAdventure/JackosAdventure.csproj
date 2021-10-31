@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
+		<OutputType>WinExe</OutputType>
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>False</AllowUnsafeBlocks>
 		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<ApplicationIcon>jacko_head_8_D1g_icon.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Assets\fonts\" />
+	  <Content Include="jacko_head_8_D1g_icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,7 +40,7 @@
 
 
 	<ItemGroup>
-    <ProjectReference Include="..\..\FNA\FNA.csproj" />
-  </ItemGroup>
+		<ProjectReference Include="..\..\FNA\FNA.csproj" />
+	</ItemGroup>
 
 </Project>

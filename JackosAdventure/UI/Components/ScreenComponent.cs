@@ -15,7 +15,7 @@ namespace JackosAdventure.UI.Components
 
         public ScreenComponent(Game game) : base(game)
         {
-            
+
         }
 
         protected override void LoadContent()
