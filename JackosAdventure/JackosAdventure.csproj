@@ -22,12 +22,14 @@
 	</Target>
 
 	<ItemGroup>
+		<Compile Remove="Simulation\Items\**" />
+		<EmbeddedResource Remove="Simulation\Items\**" />
 		<None Remove="FNA\**\*" />
+		<None Remove="Simulation\Items\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Assets\fonts\" />
-		<Folder Include="Simulation\Items\" />
 	</ItemGroup>
 
 	<ItemGroup>

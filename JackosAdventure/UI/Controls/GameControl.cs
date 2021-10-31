@@ -25,7 +25,6 @@ namespace JackosAdventure.UI.Controls
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
         {
             renderer = new ChunkRenderer(screenComponent);
-            camera = new Camera(Vector3.UnitZ);
 
             playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
             witchTexture = screenComponent.Content.Load<Texture2D>("witch_cauldron.png");
@@ -36,6 +35,9 @@ namespace JackosAdventure.UI.Controls
             witch.Position = new Vector2(30, 10);
             reaper.Position = new Vector2(2, 7);
             reaper.Area = new Rectangle(1, 1, 10, 10);
+        
+            camera = new Camera(Vector3.UnitZ, player.Size);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -103,15 +105,10 @@ namespace JackosAdventure.UI.Controls
         {
             renderer.Draw(camera);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
 
             witch.Draw(gameTime, spriteBatch);
-            reaper.Draw(gameTime, spriteBatch);
-
-            spriteBatch.End();
-
-            spriteBatch.Begin();
-            
+            reaper.Draw(gameTime, spriteBatch);            
             player.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
@@ -129,7 +126,7 @@ namespace JackosAdventure.UI.Controls
                 );
 
             this.inverseMatrix = Matrix.Invert(inverseMatrix);
-            player.SetCenter(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+
             camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
         }
 

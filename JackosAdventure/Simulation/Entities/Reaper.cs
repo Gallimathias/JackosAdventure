@@ -98,7 +98,7 @@ namespace JackosAdventure.Simulation.Entities
                 texture2D,
                 Position, Size,
                 new Rectangle(currentFrame * textureSizeX + gap, (int)CurrentDirection * textureSizeY + gap, textureSizeX - gap * 2, textureSizeY - gap * 2),
-                Color.White
+                Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
             );
 
             /*batch

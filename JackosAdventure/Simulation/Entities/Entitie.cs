@@ -12,7 +12,7 @@ namespace JackosAdventure.Simulation.Entities
     {
         public Vector2 Position { get; set; }
         public abstract Vector2 Size { get; }
-        public bool IsMoving { get; internal set; }
+        public bool IsMoving { get; set; }
 
         public virtual void Dispose()
         {
