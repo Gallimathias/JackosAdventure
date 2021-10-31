@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using JackosAdventure.UI.Components;
 using System.Collections.Generic;
-using JackosAdventure.Simulation.World;
 
 namespace JackosAdventure.UI
 {
@@ -17,12 +16,9 @@ namespace JackosAdventure.UI
         private readonly TextureAtlas atlas;
         private readonly RenderTarget2D? gameRenderTarget;
 
-        private readonly Map map;
-
-        public ChunkRenderer(ScreenGameComponent screenComponent, Map map)
+        public ChunkRenderer(ScreenGameComponent screenComponent)
         {
             graphicsDevice = screenComponent.GraphicsDevice;
-            this.map = map;
 
             basicEffect = new BasicEffect(graphicsDevice)
             {
@@ -30,19 +26,15 @@ namespace JackosAdventure.UI
             };
 
             var mapTextures = new List<string>();
-
-            foreach (var type in map.TileTypes)
-            {
-                mapTextures.Add(type + ".png");
-            }
+            mapTextures.Add("grass.png");
 
             atlas = CreateTextureAtlas(graphicsDevice, mapTextures, screenComponent, 64, 64);
 
             using var atlasStream = File.OpenWrite("atlas.png");
             atlas.Atlas.SaveAsPng(atlasStream, atlas.Atlas.Width, atlas.Atlas.Height);
 
-            int width = map.Width;
-            int height = map.Height;
+            const int width = 100;
+            const int height = 100;
             int vertexCount = width * height * 4;
             vertexBuffer
                 = new VertexBuffer(graphicsDevice, VertexPositionTexture.VertexDeclaration, vertexCount, BufferUsage.None);
@@ -55,13 +47,12 @@ namespace JackosAdventure.UI
 
             int vIndex = 0, iIndex = 0;
 
+            var grass = atlas.Textures["grass.png"];
+
             for (float y = 0; y < height; y++)
             {
                 for (float x = 0; x < width; x++)
                 {
-                    var tile = map.Tiles[(int)x, (int)y];
-                    var texture = atlas.Textures[tile.Name + ".png"];
-
                     indices[iIndex++] = (ushort)(vIndex + 2);
                     indices[iIndex++] = (ushort)(vIndex + 1);
                     indices[iIndex++] = (ushort)(vIndex + 0);
@@ -71,10 +62,10 @@ namespace JackosAdventure.UI
                     indices[iIndex++] = (ushort)(vIndex + 3);
 
 
-                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 0, y + 0, 0), texture);
-                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 1, y + 0, 0), new Vector2(texture.X + atlas.TextureSize.X, texture.Y));
-                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 0, y + 1, 0), new Vector2(texture.X, texture.Y + atlas.TextureSize.Y));
-                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 1, y + 1, 0), new Vector2(texture.X + atlas.TextureSize.X, texture.Y + atlas.TextureSize.Y));
+                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 0, y + 0, 0), grass);
+                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 1, y + 0, 0), new Vector2(grass.X + atlas.TextureSize.X, grass.Y));
+                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 0, y + 1, 0), new Vector2(grass.X, grass.Y + atlas.TextureSize.Y));
+                    vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 1, y + 1, 0), new Vector2(grass.X + atlas.TextureSize.X, grass.Y + atlas.TextureSize.Y));
                 }
             }
             vertexBuffer.SetData(vertices);
