@@ -24,7 +24,7 @@ namespace JackosAdventure.UI.Controls
         private int currentFrame = 1;
         private int lastValue = 0;
 
-        internal void Draw(GameTime gameTime, SpriteBatch batch, int centerX, int centerY)
+        internal void Draw(GameTime gameTime, SpriteBatch batch)
         {
             int xSize = texture2D.Width / 3;
             int ySize = (texture2D.Height / 4);

@@ -18,18 +18,16 @@ namespace JackosAdventure.UI.Controls
 
         private int currentDirection;
 
-        private Text firstText;
-        private Font font;
+        //private Text firstText;
 
-        public NPC_Witch(Texture2D texture2D, Font font)
+        public NPC_Witch(Texture2D texture2D)
         {
             this.texture2D = texture2D;
-            this.font = font;
         }
 
         internal void Update(GameTime gameTime)
         {
-            firstText = font.MakeText("Test");
+            //firstText = font.MakeText("Test");
         }
 
         public void Dispose()

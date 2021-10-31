@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -9,24 +10,26 @@ namespace JackosAdventure.UI.Controls
         private readonly Texture2D texture2D;
 
         public Vector2 Position { get; set; }
-        public Vector2 Size => new Vector2(78, 108);
+        public  Vector2 Size { get; } = new Vector2(2, 3);//new Vector2(78, 108);
 
         public bool IsMoving { get; internal set; }
+
         public Direction CurrentDirection { get => (Direction)currentDirection; set => currentDirection = (int)value; }
 
         private int currentDirection;
 
+        private readonly int textureSizeX;
+        private readonly int textureSizeY;
+
         public Player(Texture2D texture2D)
         {
             this.texture2D = texture2D;
+
+            textureSizeX = texture2D.Width / 3;
+            textureSizeY = texture2D.Height / 4;
         }
 
-        internal void Update(GameTime gameTime)
-        {
-
-        }
-
-        public void Dispose()
+        public  void Dispose()
         {
             texture2D.Dispose();
         }
@@ -35,12 +38,16 @@ namespace JackosAdventure.UI.Controls
         private int currentFrame = 1;
         private int lastValue = 0;
 
-        internal void Draw(GameTime gameTime, SpriteBatch batch, int centerX, int centerY)
-        {
-            int xSize = texture2D.Width / 3;
-            int ySize = (texture2D.Height / 4);
+        public void Update(GameTime gameTime) { }
 
-            batch.Draw(texture2D, new Rectangle((int)(centerX - Size.X / 2), (int)(centerY - Size.Y / 2), (int)Size.X, (int)Size.Y), new Rectangle(currentFrame * xSize, (int)CurrentDirection * ySize, xSize, ySize), Color.White);
+        public void Draw(GameTime gameTime, SpriteBatch batch)
+        {
+            batch.Draw(
+                texture2D,
+                Position, Size,
+               new Rectangle(currentFrame * textureSizeX, (int)CurrentDirection * textureSizeY, textureSizeX, textureSizeY),
+                    Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
+            );
 
             if (IsMoving)
             {
@@ -67,12 +74,5 @@ namespace JackosAdventure.UI.Controls
             }
         }
 
-        public enum Direction
-        {
-            Down = 0,
-            Left = 1,
-            Right = 2,
-            Up = 3,
-        }
     }
 }
