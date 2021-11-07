@@ -1,9 +1,10 @@
 ﻿using JackosAdventure.Simulation.World;
 using JackosAdventure.UI.Components;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using engenious;
+using engenious.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace JackosAdventure.UI
@@ -17,9 +18,16 @@ namespace JackosAdventure.UI
         private readonly TextureAtlas atlas;
 
         private readonly Map map;
+        private ScreenGameComponent ScreenComponent { get; }
 
+        private void buildatlas(ScreenGameComponent screenComponent)
+        {
+
+
+        }
         public ChunkRenderer(ScreenGameComponent screenComponent, Map map)
         {
+            ScreenComponent = screenComponent;
             graphicsDevice = screenComponent.GraphicsDevice;
             this.map = map;
 
@@ -37,17 +45,17 @@ namespace JackosAdventure.UI
 
             atlas = CreateTextureAtlas(graphicsDevice, mapTextures, screenComponent, 64, 64);
 
-            using var atlasStream = File.OpenWrite("atlas.png");
-            atlas.Atlas.SaveAsPng(atlasStream, atlas.Atlas.Width, atlas.Atlas.Height);
-
+            using var atlasBmp = Texture2D.ToBitmap(atlas.Atlas);
+            atlasBmp.Save("atlas.png", ImageFormat.Png);
+            
             int width = map.Width;
             int height = map.Height;
             int vertexCount = width * height * 4;
             vertexBuffer
-                = new VertexBuffer(graphicsDevice, VertexPositionTexture.VertexDeclaration, vertexCount, BufferUsage.None);
+                = new VertexBuffer(graphicsDevice, VertexPositionTexture.VertexDeclaration, vertexCount);
 
             indexBuffer
-                = new IndexBuffer(graphicsDevice, IndexElementSize.SixteenBits, width * height * 6, BufferUsage.None);
+                = new IndexBuffer(graphicsDevice, DrawElementsType.UnsignedShort, width * height * 6);
 
             var vertices = new VertexPositionTexture[vertexCount];
             var indices = new ushort[indexBuffer.IndexCount];
@@ -63,13 +71,13 @@ namespace JackosAdventure.UI
                     var tile = map.Tiles[(int)x, (int)y];
                     var texture = atlas.Textures[tile.Name + ".png"];
 
-                    indices[iIndex++] = (ushort)(vIndex + 2);
-                    indices[iIndex++] = (ushort)(vIndex + 1);
-                    indices[iIndex++] = (ushort)(vIndex + 0);
-
                     indices[iIndex++] = (ushort)(vIndex + 1);
                     indices[iIndex++] = (ushort)(vIndex + 2);
                     indices[iIndex++] = (ushort)(vIndex + 3);
+
+                    indices[iIndex++] = (ushort)(vIndex + 1);
+                    indices[iIndex++] = (ushort)(vIndex + 2);
+                    indices[iIndex++] = (ushort)(vIndex + 0);
 
 
                     vertices[vIndex++] = new VertexPositionTexture(new Vector3(x + 0, y + 0, 0), texture);
@@ -97,7 +105,8 @@ namespace JackosAdventure.UI
                 = new RenderTarget2D(
                     graphicsDevice,
                     width,
-                    height
+                    height,
+                    PixelInternalFormat.Rgb8
                 );
 
             graphicsDevice.SetRenderTarget(textureAtlas);
@@ -105,7 +114,8 @@ namespace JackosAdventure.UI
             var disposableList = new List<Texture2D>();
 
             var batch = new SpriteBatch(graphicsDevice);
-            batch.Begin();
+            var t = Matrix.CreateScaling(1,-1,1) * Matrix.CreateTranslation(0, -height, 0);
+            batch.Begin(sortMode: SpriteBatch.SpriteSortMode.Immediate, rasterizerState: RasterizerState.CullCounterClockwise, transformMatrix: t);
 
             int x = 0, y = 0;
             var halfTexelX = 0.5f / width;
@@ -113,7 +123,7 @@ namespace JackosAdventure.UI
 
             foreach (var textureName in textures)
             {
-                var texture = screenComponent.Content.Load<Texture2D>(textureName);
+                var texture = screenComponent.Assets.Load<Texture2D>(textureName) ?? throw new FileNotFoundException();
                 disposableList.Add(texture);
 
                 if (textureWidth != texture.Width || textureHeight != texture.Height)
@@ -133,7 +143,7 @@ namespace JackosAdventure.UI
             }
 
             batch.End();
-            graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.SetRenderTarget(null!);
 
             foreach (var texture in disposableList)
             {
@@ -153,20 +163,19 @@ namespace JackosAdventure.UI
         public void Draw(Camera camera)
         {
             graphicsDevice.RasterizerState = RasterizerState.CullNone;
-            graphicsDevice.SetVertexBuffer(vertexBuffer);
-            graphicsDevice.Indices = indexBuffer;
+            graphicsDevice.VertexBuffer = vertexBuffer;
+            graphicsDevice.IndexBuffer = indexBuffer;
 
             basicEffect.View = camera.View;
             basicEffect.Projection = camera.Projection;
             basicEffect.Texture = atlas.Atlas;
             basicEffect.World = Matrix.Identity;
 
-            foreach (var p in basicEffect.CurrentTechnique.Passes)
+            foreach (var p in basicEffect.CurrentTechnique!.Passes)
             {
                 p.Apply();
 
-
-                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexBuffer.VertexCount, 0, indexBuffer.IndexCount / 3);
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.Triangles, 0, 0, (int)vertexBuffer.VertexCount, 0, indexBuffer.IndexCount / 3);
 
             }
         }

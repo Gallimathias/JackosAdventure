@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Content>
+  <Name>Content</Name>
+  <Configuration>Debug</Configuration>
+  <OutputDir>bin/{Configuration}/</OutputDir>
+  <Contents>
+    <ContentFolder>
+      <Name>fonts</Name>
+      <Contents>
+        <ContentFile>
+          <Name>golem-script.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
+          <Settings />
+        </ContentFile>
+        <ContentFile>
+          <Name>Halls___.spritefont</Name>
+          <Processor>SpriteFontProcessor</Processor>
+          <Importer>SpriteFontImporter</Importer>
+          <Settings />
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
+  </Contents>
+</Content>

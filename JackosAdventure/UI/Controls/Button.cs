@@ -1,9 +1,8 @@
 ﻿using JackosAdventure.UI.Components;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using engenious;
+using engenious.Graphics;
 using System;
 using System.IO;
-using Velentr.Font;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -12,25 +11,27 @@ namespace JackosAdventure.UI.Controls
         public event Action? OnClick;
 
         private readonly Rectangle controlArea;
-        private readonly Font font;
-        private readonly Text text;
+        private readonly SpriteFont font;
+        private readonly string text;
+        private readonly Vector2 textSize;
 
         public Button(ScreenGameComponent screenComponent, Rectangle position, string title) : base(screenComponent)
         {
             controlArea = position;
-            font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "golem-script.ttf"), 48);
-            text = font.MakeText(title);
+            font = screenComponent.Content.Load<SpriteFont>("fonts/golem-script") ?? throw new FileNotFoundException();//screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "golem-script.ttf"), 48);
+            text = title;
+            textSize = font.MeasureString(text);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            var x = (controlArea.Width / 2) - (text.Size.X / 2) + controlArea.X;
-            var y = (controlArea.Height / 2) - (text.Size.Y / 2) + controlArea.Y + 15;
+            var x = (controlArea.Width / 2f) - (textSize.X / 2) + controlArea.X;
+            var y = (controlArea.Height / 2f) - (textSize.Y / 2) + controlArea.Y + 3;
 
             spriteBatch.Begin();
             spriteBatch.Draw(Skin.Pix!, controlArea, Color.SaddleBrown);
-            spriteBatch.DrawString(text, new Vector2(x, y), Color.White);
+            spriteBatch.DrawString(font, text, new Vector2(x, y), Color.White);
             spriteBatch.End();
             base.Draw(gameTime, spriteBatch);
         }
@@ -41,12 +42,6 @@ namespace JackosAdventure.UI.Controls
             {
                 OnClick?.Invoke();
             }
-        }
-
-        public override void Dispose()
-        {
-            font.Dispose();
-            base.Dispose();
         }
     }
 }

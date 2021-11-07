@@ -1,10 +1,9 @@
-﻿using JackosAdventure.UI.Components;
+﻿using System.IO;
+using JackosAdventure.UI.Components;
 using JackosAdventure.UI.Controls;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
-using System.IO;
-using Velentr.Font;
+using engenious;
+using engenious.Audio;
+using engenious.Graphics;
 
 namespace JackosAdventure.UI.Screens
 {
@@ -12,9 +11,9 @@ namespace JackosAdventure.UI.Screens
     {
         private readonly Button playButton;
         private readonly Texture2D headTexture;
-        private readonly Font font;
-        private readonly Text text;
-        private readonly Song backgroundSong;
+        // private readonly Song backgroundSong;
+
+        private readonly SpriteFont font;
 
 
         public MenuScreen(ScreenGameComponent screenComponent) : base(screenComponent)
@@ -30,22 +29,24 @@ namespace JackosAdventure.UI.Screens
 
             screenComponent.Game.IsMouseVisible = true;
 
-            headTexture = screenComponent.Content.Load<Texture2D>(@"jacko_head_8.png");
-            font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "Halls___.ttf"), 80);
-            text = font.MakeText("Jackos Adventure");
+            headTexture = screenComponent.Assets.Load<Texture2D>(@"jacko_head_8.png") ?? throw new FileNotFoundException();
+            font = screenComponent.Content.Load<SpriteFont>("fonts/Halls___") ?? throw new FileNotFoundException();
+            // font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "Halls___.ttf"), 80);
 
 
-            backgroundSong = screenComponent.Content.Load<Song>(@"music\Twin Musicom - Spooky Ride.ogg");
-            MediaPlayer.Play(backgroundSong);
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Volume = 0.3f;
+            
+            // backgroundSong = screenComponent.Content.Load<Song>(@"music\Twin Musicom - Spooky Ride.ogg");
+            // MediaPlayer.Play(backgroundSong);
+            // MediaPlayer.IsRepeating = true;
+            // MediaPlayer.Volume = 0.3f;
+            // TODO: song
         }
 
         public void PlayButtonClick()
         {
             var gameScreen = new GameScreen(ScreenComponent);
             ScreenComponent.NavigateTo(gameScreen);
-            MediaPlayer.Stop();
+            // MediaPlayer.Stop();
         }
 
         public override void Update(GameTime gameTime)
@@ -59,12 +60,14 @@ namespace JackosAdventure.UI.Screens
         {
             GraphicsDevice.Clear(Color.Black);
 
-            var x = (GraphicsDevice.Viewport.Width / 2) - (text.Size.X / 2);
+            const string heading = "Jackos Adventure";
+
+            var x = (GraphicsDevice.Viewport.Width / 2f) - (font.MeasureString(heading).X / 2);
             var y = 20;
 
             batch.Begin();
             batch.Draw(headTexture, new Vector2(0, GraphicsDevice.Viewport.Height - headTexture.Height), Color.White);
-            batch.DrawString(text, new Vector2(x, y), Color.DarkOrange);
+            batch.DrawString(font,heading, new Vector2(x, y), Color.DarkOrange);
             batch.End();
 
             playButton.Draw(gameTime, batch);
@@ -77,7 +80,7 @@ namespace JackosAdventure.UI.Screens
             playButton.Dispose();
             headTexture.Dispose();
             font.Dispose();
-            backgroundSong.Dispose();
+            // backgroundSong.Dispose(); TODO: 
 
             base.Dispose();
         }

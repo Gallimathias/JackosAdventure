@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿using engenious;
 
 namespace JackosAdventure.UI
 {
@@ -31,7 +31,7 @@ namespace JackosAdventure.UI
 
             center = new Vector2(-tileCount / aspectRatio / 2f, -tileCount / 2f);
 
-            Unit = new Vector2(height / tileCount, height / tileCount);
+            Unit = new Vector2((float)height / tileCount, (float)height / tileCount);
             Projection = Matrix.CreateOrthographicOffCenter(0, tileCount / aspectRatio, tileCount, 0, 10, -10);
         }
 
@@ -39,7 +39,7 @@ namespace JackosAdventure.UI
         {
             var offset = new Vector3(center + PlayerSize / 2f, 0);
             View = Matrix.CreateLookAt(Position + offset, Position + offset + new Vector3(0, 0, -1), Vector3.UnitY);
-            ViewProjection = View * Projection;
+            ViewProjection = Projection * View;
         }
     }
 }

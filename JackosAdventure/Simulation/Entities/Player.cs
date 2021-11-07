@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using engenious;
+using engenious.Graphics;
 
 namespace JackosAdventure.Simulation.Entities
 {
@@ -37,13 +35,13 @@ namespace JackosAdventure.Simulation.Entities
         private int lastValue = 0;
 
 
-        public void Draw(GameTime gameTime, SpriteBatch batch)
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
             batch.Draw(
                 texture2D,
                 Position, Size,
                new Rectangle(currentFrame * textureSizeX, (int)CurrentDirection * textureSizeY, textureSizeX, textureSizeY),
-                    Color.White, 0, Vector2.Zero, SpriteEffects.None, (Position.Y + Size.Y) / 1000f
+                    Color.White, 0, Vector2.Zero, SpriteBatch.SpriteEffects.None, -(Position.Y + Size.Y) / 1000f
             );
 
             if (IsMoving)

@@ -1,11 +1,12 @@
 ﻿using JackosAdventure.Simulation.Entities;
 using JackosAdventure.Simulation.World;
 using JackosAdventure.UI.Components;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using engenious;
+using engenious.Graphics;
 using System.IO;
-using Velentr.Font;
+using engenious.Input;
+using Color = engenious.Color;
+using Rectangle = engenious.Rectangle;
 
 namespace JackosAdventure.UI.Controls
 {
@@ -23,8 +24,9 @@ namespace JackosAdventure.UI.Controls
         private Viewport currentViewport;
         private Matrix inverseMatrix;
 
-        private readonly Font font;
-        private readonly Text text;
+        private readonly SpriteFont font;
+        private const string text = "*Die Hexe lacht*";
+        private readonly Vector2 textSize;
         private bool witchInteracting;
 
         public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
@@ -35,9 +37,9 @@ namespace JackosAdventure.UI.Controls
 
             renderer = new ChunkRenderer(screenComponent, map);
 
-            playerTexture = screenComponent.Content.Load<Texture2D>("jacko_a_3.png");
-            witchTexture = screenComponent.Content.Load<Texture2D>("witch2_cauldron_3.png");
-            reaperTexture = screenComponent.Content.Load<Texture2D>("reaper_3.png");
+            playerTexture = screenComponent.Assets.Load<Texture2D>("jacko_a_3.png") ?? throw new FileNotFoundException();
+            witchTexture = screenComponent.Assets.Load<Texture2D>("witch2_cauldron_3.png") ?? throw new FileNotFoundException();
+            reaperTexture = screenComponent.Assets.Load<Texture2D>("reaper_3.png") ?? throw new FileNotFoundException();
             player = new Player(playerTexture);
             witch = new Witch(witchTexture);
             reaper = new Reaper(reaperTexture);
@@ -47,8 +49,10 @@ namespace JackosAdventure.UI.Controls
 
             camera = new Camera(Vector3.UnitZ, player.Size);
 
-            font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "golem-script.ttf"), 48);
-            text = font.MakeText("*Die Hexe lacht*");
+            font = screenComponent.Content.Load<SpriteFont>("fonts/golem-script") ?? throw new FileNotFoundException();
+            textSize = font.MeasureString(text);
+            // font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "golem-script.ttf"), 48);
+            // text = font.MakeText("*Die Hexe lacht*");
 
         }
 
@@ -100,7 +104,7 @@ namespace JackosAdventure.UI.Controls
                 player.CurrentDirection = Direction.Right;
             }
 
-            if (dir.LengthSquared() > 0)
+            if (dir.LengthSquared > 0)
                 dir.Normalize();
 
             const float speed = 4f;
@@ -133,7 +137,7 @@ namespace JackosAdventure.UI.Controls
         {
             renderer.Draw(camera);
 
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, transformationMatrix: camera.ViewProjection * inverseMatrix);
+            spriteBatch.Begin(SpriteBatch.SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, camera.ViewProjection, false);
 
             witch.Draw(gameTime, spriteBatch);
             reaper.Draw(gameTime, spriteBatch);
@@ -144,9 +148,9 @@ namespace JackosAdventure.UI.Controls
             spriteBatch.Begin();
             if (witchInteracting)
             {
-                var x = GraphicsDevice.Viewport.Width / 2 - text.Width / 2;
-                var y = GraphicsDevice.Viewport.Height - text.Height - 10;
-                spriteBatch.DrawString(text, new Vector2(x, y), Color.White);
+                var x = GraphicsDevice.Viewport.Width / 2f - textSize.X / 2;
+                var y = GraphicsDevice.Viewport.Height - textSize.Y - 10;
+                spriteBatch.DrawString(font, text, new Vector2(x, y), Color.White);
             }
             spriteBatch.End();
 

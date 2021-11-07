@@ -1,29 +1,40 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Velentr.Font;
+﻿using System.IO;
+using engenious;
+using engenious.Graphics;
+using engenious.Content;
 using JackosAdventure.UI.Controls;
 
 namespace JackosAdventure.UI.Components
 {
     internal abstract class ScreenGameComponent : DrawableGameComponent
     {
-        public FontManager Fonts { get; }
 
-        public ContentManager Content => Game.Content;
+        public class AssetManager
+        {
+            public GraphicsDevice GraphicsDevice { get; }
+            public AssetManager(GraphicsDevice graphicsDevice)
+            {
+                GraphicsDevice = graphicsDevice;
+            }
+            public T? Load<T>(string path)
+            {
+                if (typeof(T) == typeof(Texture2D))
+                    return (T)(object)Texture2D.FromFile(GraphicsDevice, Path.Combine("Assets", path));
+                return default;
+            }
+        }
+        
+        public AssetManager Assets { get; }
+        
+        public ContentManagerBase Content => Game.Content;
 
         private Control? activeControl;
         private readonly SpriteBatch spriteBatch;
 
         public ScreenGameComponent(Game game) : base(game)
         {
+            Assets = new AssetManager(game.GraphicsDevice);
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Fonts = new FontManager(GraphicsDevice);
         }
 
         public void NavigateTo(Control control)
@@ -51,18 +62,18 @@ namespace JackosAdventure.UI.Components
 
             base.LoadContent();
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                activeControl?.Dispose();
-                spriteBatch.Dispose();
-                Fonts.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
+        
+        // TODO: dispose
+        // protected override void Dispose(bool disposing)
+        // {
+        //     if (disposing)
+        //     {
+        //         activeControl?.Dispose();
+        //         spriteBatch.Dispose();
+        //     }
+        //
+        //     base.Dispose(disposing);
+        // }
 
     }
 }

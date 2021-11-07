@@ -1,8 +1,8 @@
 ﻿using JackosAdventure.UI.Components;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using engenious;
+using engenious.Graphics;
 using System;
+using engenious.Input;
 
 namespace JackosAdventure.UI.Controls
 {

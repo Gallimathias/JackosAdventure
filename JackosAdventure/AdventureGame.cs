@@ -1,28 +1,19 @@
 ﻿using JackosAdventure.UI.Components;
-using Microsoft.Xna.Framework;
+using engenious;
 using System;
+using engenious.Graphics;
 
 namespace JackosAdventure
 {
     internal class AdventureGame : Game
     {
-        private readonly GraphicsDeviceManager grapicDeviceManager;
 
         public AdventureGame()
         {
-            grapicDeviceManager = new GraphicsDeviceManager(this)
-            {
-                PreferredBackBufferWidth = 1280,
-                PreferredBackBufferHeight = 720,
-                IsFullScreen = false,
-                SynchronizeWithVerticalRetrace = true
-            };
+            GraphicsDevice.Viewport = new Viewport(0,0, 1280, 720);
+            Window.ClientSize = new Size(1280, 720);
 
             Window.Title = "Jacko's Adventure";
-            Content.RootDirectory = "Assets";
-            
-
-            Disposed += (s, e) => OnDisposed();
         }
 
         protected override void Initialize()
@@ -32,16 +23,11 @@ namespace JackosAdventure
             Components.Add(screenComponent);
             base.Initialize();
         }
-
-        protected override void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }
 
-        public void OnDisposed()
-        {
-            ((IDisposable)grapicDeviceManager).Dispose();
-        }
     }
 }

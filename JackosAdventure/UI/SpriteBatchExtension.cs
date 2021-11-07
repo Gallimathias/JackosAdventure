@@ -1,18 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using engenious;
+using engenious.Graphics;
 
 namespace JackosAdventure
 {
     internal static class SpriteBatchExtension
     {
-        public static void Draw(this SpriteBatch batch, Texture2D text, Vector2 pos, Vector2 size, Rectangle sourceRectangle, Color color, float rotation, Vector2 offset, SpriteEffects effects, float layerDepth)
+        public static void Draw(this SpriteBatch batch, Texture2D text, Vector2 pos, Vector2 size, Rectangle sourceRectangle, Color color, float rotation, Vector2 offset, SpriteBatch.SpriteEffects effects, float layerDepth)
         {
-            var scale = new Vector2(size.X / sourceRectangle.Width, size.Y / sourceRectangle.Height);
-            batch.Draw(text, pos, sourceRectangle, color, rotation, offset, scale, effects, layerDepth);
+            batch.Draw(text, pos, sourceRectangle, color, rotation, offset, size, effects, layerDepth);
         }
         public static void Draw(this SpriteBatch batch, Texture2D text, Vector2 pos, Vector2 size, Rectangle sourceRectangle, Color color)
         {
-            batch.Draw(text, pos, size, sourceRectangle, color, 0, Vector2.Zero, SpriteEffects.None, 0f);
+            batch.Draw(text, pos, size, sourceRectangle, color, 0, Vector2.Zero, SpriteBatch.SpriteEffects.None, 0f);
         }
     }
 }

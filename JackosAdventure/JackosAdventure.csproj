@@ -10,13 +10,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<FNANative Include="FNA\x64\**\*" Visible="False"></FNANative>
 		<Assets Include="Assets\**\*" />
 	</ItemGroup>
-
-	<Target Name="CopyNativLibs" AfterTargets="AfterBuild">
-		<Copy SourceFiles="@(FNANative)" DestinationFolder="$(OutDir)" />
-	</Target>
 
 	<Target Name="CopyAssets" AfterTargets="AfterBuild">
 		<Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)\Assets\%(RecursiveDir)"></Copy>
@@ -25,22 +20,18 @@
 	<ItemGroup>
 		<Compile Remove="Simulation\Items\**" />
 		<EmbeddedResource Remove="Simulation\Items\**" />
-		<None Remove="FNA\**\*" />
 		<None Remove="Simulation\Items\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="jacko_head_8_D1g_icon.ico" />
+		<EngeniousContentReference Include="Content/Content.ecp" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SharpFont.NetStandard" Version="1.0.5" />
-		<PackageReference Include="Velentr.Font.FNA" Version="1.2.8" />
-	</ItemGroup>
+		<PackageReference Include="engenious" Version="0.6.0.6-alpha" />
+		<PackageReference Include="engenious.ContentTool" Version="0.6.0.4-alpha" />
 
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\FNA\FNA.csproj" />
 	</ItemGroup>
 
 </Project>

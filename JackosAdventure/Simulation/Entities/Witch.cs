@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using engenious;
+using engenious.Graphics;
 
 namespace JackosAdventure.Simulation.Entities
 {
@@ -49,8 +49,8 @@ namespace JackosAdventure.Simulation.Entities
                     Color.White, 
                     0, 
                     Vector2.Zero, 
-                    SpriteEffects.None, 
-                    (Position.Y + Size.Y) / 1000f
+                    SpriteBatch.SpriteEffects.None, 
+                    -(Position.Y + Size.Y) / 1000f
                 );
         }
 
