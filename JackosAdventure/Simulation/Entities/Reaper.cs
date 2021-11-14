@@ -33,47 +33,51 @@ namespace JackosAdventure.Simulation.Entities
         }
 
         private double waitingSeconds;
-        private bool isWaiting;
+        private Vector2 targetPosition;
 
         public override void Update(GameTime gameTime)
         {
             const float speed = 4f;
-            Vector2 direction = default;
+            Vector2 direction = (targetPosition - Position);
+            if (direction.LengthSquared > 0)
+                direction.Normalize();
 
-            switch (CurrentDirection)
+            if (Math.Abs(direction.X) > 0 && Math.Abs(direction.Y) > 0)
             {
-                case Direction.Down:
-                    direction = Vector2.UnitY;
-                    break;
-                case Direction.Left:
-                    direction = -Vector2.UnitX;
-                    break;
-                case Direction.Right:
-                    direction = Vector2.UnitX;
-                    break;
-                case Direction.Up:
-                    direction = -Vector2.UnitY;
-                    break;
+                if (Math.Abs(direction.X) >= Math.Abs(direction.Y))
+                {
+                    CurrentDirection = direction.X < 0 ? Direction.Left : Direction.Right;
+                }
+                else
+                {
+                    CurrentDirection = direction.Y < 0 ? Direction.Up : Direction.Down;
+                }
             }
 
             var newPosition = Position + direction * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
-            if (Area.Contains((int)newPosition.X, (int)newPosition.Y))
+            if (IsMoving)
             {
-                IsMoving = true;
-                Position = newPosition;
-            }
-            else if (!isWaiting)
-            {
-                IsMoving = false;
-                waitingSeconds = gameTime.TotalGameTime.TotalSeconds + 10;
-                isWaiting = true;
+                var newDirection = (targetPosition - newPosition).Normalized();
+                if (newDirection.Dot(direction) < 0)
+                {
+                    Position = targetPosition;
+                    IsMoving = false;
+                    waitingSeconds = gameTime.TotalGameTime.TotalSeconds + random.Next(1, 11);
+                }
+                else
+                {
+                    Position = newPosition;
+                }
             }
 
-            if (gameTime.TotalGameTime.TotalSeconds > waitingSeconds && isWaiting)
+            if (gameTime.TotalGameTime.TotalSeconds > waitingSeconds && !IsMoving)
             {
-                CurrentDirection = (Direction)random.Next(0, 4);
-                isWaiting = false;
+                var x = (float)(Area.X + (random.NextDouble() * Area.Width));
+                var y = (float)(Area.Y + (random.NextDouble() * Area.Height));
+                targetPosition = new Vector2(x, y);
+
+                IsMoving = true;
             }
 
         }

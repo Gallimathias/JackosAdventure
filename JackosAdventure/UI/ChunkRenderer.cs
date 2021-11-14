@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
+using engenious.UI;
 
 namespace JackosAdventure.UI
 {
@@ -18,14 +19,9 @@ namespace JackosAdventure.UI
         private readonly TextureAtlas atlas;
 
         private readonly Map map;
-        private ScreenGameComponent ScreenComponent { get; }
+        private ScreenComponent ScreenComponent { get; }
 
-        private void buildatlas(ScreenGameComponent screenComponent)
-        {
-
-
-        }
-        public ChunkRenderer(ScreenGameComponent screenComponent, Map map)
+        public ChunkRenderer(ScreenComponent screenComponent, Map map)
         {
             ScreenComponent = screenComponent;
             graphicsDevice = screenComponent.GraphicsDevice;
@@ -90,7 +86,7 @@ namespace JackosAdventure.UI
             indexBuffer.SetData(indices);
         }
 
-        private TextureAtlas CreateTextureAtlas(GraphicsDevice graphicsDevice, List<string> textures, ScreenGameComponent screenComponent, int textureWidth, int textureHeight)
+        private TextureAtlas CreateTextureAtlas(GraphicsDevice graphicsDevice, List<string> textures, ScreenComponent screenComponent, int textureWidth, int textureHeight)
         {
             const int gap = 3;
 

@@ -4,85 +4,90 @@ using JackosAdventure.UI.Controls;
 using engenious;
 using engenious.Audio;
 using engenious.Graphics;
+using engenious.UI;
+using engenious.UI.Controls;
+using System;
 
 namespace JackosAdventure.UI.Screens
 {
-    internal class MenuScreen : Control
+    internal class MenuScreen : Screen, IDisposable
     {
-        private readonly Button playButton;
+        private readonly TextButton playButton;
         private readonly Texture2D headTexture;
         // private readonly Song backgroundSong;
 
         private readonly SpriteFont font;
+        private readonly SpriteFont buttonFont;
+        private readonly SoundEffect sound;
+        private readonly SoundEffectInstance soundInstance;
+        private readonly ScreenComponent baseScreenComponent;
 
-
-        public MenuScreen(ScreenGameComponent screenComponent) : base(screenComponent)
+        public MenuScreen(ScreenComponent screenComponent) : base(screenComponent)
         {
-            var width = GraphicsDevice.Viewport.Width / 3;
+            baseScreenComponent = screenComponent;
+            var width = ScreenManager.GraphicsDevice.Viewport.Width / 3;
             var height = 60;
 
-            var x = (GraphicsDevice.Viewport.Width - width) / 2;
-            var y = (GraphicsDevice.Viewport.Height - height) / 2;
-
-            playButton = new Button(screenComponent, new Rectangle(x, y, width, height), "Play");
-            playButton.OnClick += PlayButtonClick;
-
+            var x = (ScreenManager.GraphicsDevice.Viewport.Width - width) / 2;
+            var y = (ScreenManager.GraphicsDevice.Viewport.Height - height) / 2;
+            
             screenComponent.Game.IsMouseVisible = true;
 
             headTexture = screenComponent.Assets.Load<Texture2D>(@"jacko_head_8.png") ?? throw new FileNotFoundException();
             font = screenComponent.Content.Load<SpriteFont>("fonts/Halls___") ?? throw new FileNotFoundException();
-            // font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "Halls___.ttf"), 80);
+            buttonFont = screenComponent.Content.Load<SpriteFont>("fonts/golem-script") ?? throw new FileNotFoundException();
+            sound = screenComponent.Content.Load<SoundEffect>("music/Twin_Musicom-Spooky_Ride") ?? throw new FileNotFoundException();
 
+            playButton = new TextButton(screenComponent, "Play")
+            {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Font = buttonFont,
+                Background = SolidColorBrush.SaddleBrown,
+                TextColor = Color.White,
+                Width = 400,
+                Padding = Border.All(5),
+                HoveredBackground = SolidColorBrush.SandyBrown,
+            };
+            playButton.LeftMouseClick += PlayButtonClick;
 
-            
-            // backgroundSong = screenComponent.Content.Load<Song>(@"music\Twin Musicom - Spooky Ride.ogg");
-            // MediaPlayer.Play(backgroundSong);
-            // MediaPlayer.IsRepeating = true;
-            // MediaPlayer.Volume = 0.3f;
-            // TODO: song
+            Controls.Add(playButton);
+
+            soundInstance = sound.CreateInstance();
+            soundInstance.IsLooped = true;
+            soundInstance.Volume = 0.3f;
+            soundInstance.Play();
         }
 
-        public void PlayButtonClick()
+        public void PlayButtonClick(Control sender, MouseEventArgs args)
         {
-            var gameScreen = new GameScreen(ScreenComponent);
-            ScreenComponent.NavigateTo(gameScreen);
-            // MediaPlayer.Stop();
+            soundInstance.Stop();
+            var gameScreen = new GameScreen(baseScreenComponent);
+            ScreenManager.NavigateToScreen(gameScreen);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void OnDraw(SpriteBatch batch, Rectangle controlArea, GameTime gameTime)
         {
-            playButton.Update(gameTime);
-
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime, SpriteBatch batch)
-        {
-            GraphicsDevice.Clear(Color.Black);
+            base.OnDraw(batch, controlArea, gameTime);
 
             const string heading = "Jackos Adventure";
 
-            var x = (GraphicsDevice.Viewport.Width / 2f) - (font.MeasureString(heading).X / 2);
-            var y = 20;
+            var x = controlArea.X + (controlArea.Width / 2f) - (font.MeasureString(heading).X / 2);
+            var y = controlArea.Y + 20;
 
             batch.Begin();
-            batch.Draw(headTexture, new Vector2(0, GraphicsDevice.Viewport.Height - headTexture.Height), Color.White);
+            batch.Draw(headTexture, new Vector2(controlArea.X, controlArea.Y + controlArea.Height - headTexture.Height), Color.White);
             batch.DrawString(font,heading, new Vector2(x, y), Color.DarkOrange);
             batch.End();
-
-            playButton.Draw(gameTime, batch);
-
-            base.Draw(gameTime, batch);
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            playButton.Dispose();
-            headTexture.Dispose();
-            font.Dispose();
+            //headTexture.Dispose();
+            //font.Dispose();
             // backgroundSong.Dispose(); TODO: 
+            soundInstance.Dispose();
 
-            base.Dispose();
         }
     }
 }

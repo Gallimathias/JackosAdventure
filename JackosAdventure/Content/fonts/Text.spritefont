@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <EngeniousFont>
-  <FontName>Halloween Spider</FontName>
-  <Size>60</Size>
+  <FontName>golem script</FontName>
+  <Size>14</Size>
+  <Style>Regular</Style>
   <Spacing>0</Spacing>
   <UseKerning>True</UseKerning>
-  <Style>Regular</Style>
   <DefaultCharacter>&#x0;</DefaultCharacter>
   <CharacterRegions>
     <CharacterRegion>

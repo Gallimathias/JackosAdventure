@@ -2,6 +2,7 @@
 using engenious;
 using System;
 using engenious.Graphics;
+using System.Reflection;
 
 namespace JackosAdventure
 {
@@ -14,6 +15,7 @@ namespace JackosAdventure
             Window.ClientSize = new Size(1280, 720);
 
             Window.Title = "Jacko's Adventure";
+            Icons = new[] { new System.Drawing.Icon(typeof(AdventureGame), "jacko_head_8_D1g_icon.ico") };
         }
 
         protected override void Initialize()

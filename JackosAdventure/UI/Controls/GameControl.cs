@@ -7,10 +7,14 @@ using System.IO;
 using engenious.Input;
 using Color = engenious.Color;
 using Rectangle = engenious.Rectangle;
+using engenious.UI;
+using System;
+using engenious.UI.Controls;
+using JackosAdventure.Simulation;
 
 namespace JackosAdventure.UI.Controls
 {
-    internal class GameControl : Control
+    internal class GameControl : Control, IDisposable
     {
         private readonly ChunkRenderer renderer;
         private readonly Camera camera;
@@ -22,14 +26,15 @@ namespace JackosAdventure.UI.Controls
         private readonly Texture2D reaperTexture;
 
         private Viewport currentViewport;
-        private Matrix inverseMatrix;
 
         private readonly SpriteFont font;
         private const string text = "*Die Hexe lacht*";
         private readonly Vector2 textSize;
         private bool witchInteracting;
+        private DialogControl dialogControl;
+        private Dialog witchDialog;
 
-        public GameControl(ScreenGameComponent screenComponent) : base(screenComponent)
+        public GameControl(ScreenComponent screenComponent) : base(screenComponent)
         {
             using var fileStream = File.OpenRead(Path.Combine(".", "Assets", "graveyard.map"));
             using var reader = new BinaryReader(fileStream);
@@ -50,17 +55,37 @@ namespace JackosAdventure.UI.Controls
             camera = new Camera(Vector3.UnitZ, player.Size);
 
             font = screenComponent.Content.Load<SpriteFont>("fonts/golem-script") ?? throw new FileNotFoundException();
+            Skin.Current.TextFont = screenComponent.Content.Load<SpriteFont>("fonts/Text") ?? throw new FileNotFoundException();
             textSize = font.MeasureString(text);
             // font = screenComponent.Fonts.GetFont(Path.Combine(".", "Assets", "fonts", "golem-script.ttf"), 48);
             // text = font.MakeText("*Die Hexe lacht*");
 
+            var byebye = new Dialog.DialogOption("ByeBye");
+            witchDialog = new Dialog("*hehehehehehe*", "Hexe", new Dialog.DialogOption("Hallo", new Dialog("Schuppe Schuppe", options: byebye)), byebye);
+
+            dialogControl = new DialogControl(screenComponent)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = new SolidColorBrush(new Color(Color.Black, 0.7f)),
+            };
+
+            var grid = new Grid(screenComponent)
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 2 });
+            grid.Rows.Add(new RowDefinition() { ResizeMode = ResizeMode.Parts, Height = 1 });
+            grid.Columns.Add(new ColumnDefinition() { ResizeMode = ResizeMode.Parts, Width = 1 });
+
+            grid.AddControl(dialogControl, 0, 1);
+            Children.Add(grid);
         }
 
-        private double talkingTime;
-
-        public override void Update(GameTime gameTime)
+        protected override void OnUpdate(GameTime gameTime)
         {
-            var deviceViewPort = GraphicsDevice.Viewport;
+            var deviceViewPort = ScreenManager.GraphicsDevice.Viewport;
             if (currentViewport.X != deviceViewPort.X
                 || currentViewport.Y != deviceViewPort.Y
                 || currentViewport.Width != deviceViewPort.Width
@@ -69,44 +94,51 @@ namespace JackosAdventure.UI.Controls
                 ViewPortChanged(currentViewport, deviceViewPort);
                 currentViewport = deviceViewPort;
             }
-
-            var keyBoardState = Keyboard.GetState();
-            var isInteracting = keyBoardState.IsKeyDown(Keys.E);
-
             var dir = new Vector2(0, 0);
-            player.IsMoving = false;
 
-            if (keyBoardState.IsKeyDown(Keys.W))
+            if (!dialogControl.Visible)
             {
-                dir += new Vector2(0, -1);
-                player.IsMoving = true;
-                player.CurrentDirection = Direction.Up;
+                var keyBoardState = Keyboard.GetState();
+                var isInteracting = keyBoardState.IsKeyDown(Keys.E);
+
+                player.IsMoving = false;
+
+                if (keyBoardState.IsKeyDown(Keys.W))
+                {
+                    dir += new Vector2(0, -1);
+                    player.IsMoving = true;
+                    player.CurrentDirection = Direction.Up;
+                }
+
+                if (keyBoardState.IsKeyDown(Keys.S))
+                {
+                    dir += new Vector2(0, 1);
+                    player.IsMoving = true;
+                    player.CurrentDirection = Direction.Down;
+                }
+
+                if (keyBoardState.IsKeyDown(Keys.A))
+                {
+                    dir += new Vector2(-1, 0);
+                    player.IsMoving = true;
+                    player.CurrentDirection = Direction.Left;
+                }
+
+                if (keyBoardState.IsKeyDown(Keys.D))
+                {
+                    dir += new Vector2(1, 0);
+                    player.IsMoving = true;
+                    player.CurrentDirection = Direction.Right;
+                }
+
+                if (dir.LengthSquared > 0)
+                    dir.Normalize();
+
+                if (isInteracting && witch.InteractionArea.Contains((int)player.Position.X, (int)player.Position.Y))
+                {
+                    dialogControl.Show(witchDialog);
+                }
             }
-
-            if (keyBoardState.IsKeyDown(Keys.S))
-            {
-                dir += new Vector2(0, 1);
-                player.IsMoving = true;
-                player.CurrentDirection = Direction.Down;
-            }
-
-            if (keyBoardState.IsKeyDown(Keys.A))
-            {
-                dir += new Vector2(-1, 0);
-                player.IsMoving = true;
-                player.CurrentDirection = Direction.Left;
-            }
-
-            if (keyBoardState.IsKeyDown(Keys.D))
-            {
-                dir += new Vector2(1, 0);
-                player.IsMoving = true;
-                player.CurrentDirection = Direction.Right;
-            }
-
-            if (dir.LengthSquared > 0)
-                dir.Normalize();
-
             const float speed = 4f;
 
 
@@ -118,23 +150,13 @@ namespace JackosAdventure.UI.Controls
 
             witch.Update(gameTime);
 
-            if (isInteracting && witch.InteractionArea.Contains((int)player.Position.X, (int)player.Position.Y))
-            {
-                witchInteracting = true;
-                talkingTime = gameTime.TotalGameTime.TotalSeconds + 5;
-            }
-
-            if (!witch.InteractionArea.Contains((int)player.Position.X, (int)player.Position.Y)
-                || gameTime.TotalGameTime.TotalSeconds > talkingTime)
-            {
-                witchInteracting = false;
-            }
-
             reaper.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        protected override void OnDraw(SpriteBatch spriteBatch, Rectangle controlArea, GameTime gameTime)
         {
+            base.OnDraw(spriteBatch, controlArea, gameTime);
+
             renderer.Draw(camera);
 
             spriteBatch.Begin(SpriteBatch.SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, null, camera.ViewProjection, false);
@@ -144,34 +166,15 @@ namespace JackosAdventure.UI.Controls
             player.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
-
-            spriteBatch.Begin();
-            if (witchInteracting)
-            {
-                var x = GraphicsDevice.Viewport.Width / 2f - textSize.X / 2;
-                var y = GraphicsDevice.Viewport.Height - textSize.Y - 10;
-                spriteBatch.DrawString(font, text, new Vector2(x, y), Color.White);
-            }
-            spriteBatch.End();
-
         }
 
         private void ViewPortChanged(Viewport currentViewPort, Viewport newViewPort)
         {
-            var inverseMatrix = new Matrix
-                (
-                2.0f / GraphicsDevice.Viewport.Width, 0, 0, 0,
-                0, -2.0f / GraphicsDevice.Viewport.Height, 0, 0,
-                0, 0, 1, 0,
-                 -1, 1, 0, 1
-                );
-
-            this.inverseMatrix = Matrix.Invert(inverseMatrix);
-
-            camera.UpdateBounds(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 20);
+            camera.UpdateBounds(ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height, 20);
         }
 
-        public override void Dispose()
+
+        public void Dispose()
         {
             player.Dispose();
             playerTexture.Dispose();
@@ -185,7 +188,7 @@ namespace JackosAdventure.UI.Controls
         private Vector2 ScreenToWorld(Vector2 screen)
         {
             var pos = new Vector3(screen.X, screen.Y, 0);
-            var viewport = GraphicsDevice.Viewport;
+            var viewport = ScreenManager.GraphicsDevice.Viewport;
 
             pos = viewport.Unproject(pos, camera.Projection, camera.View, Matrix.Identity);
 

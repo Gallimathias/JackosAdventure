@@ -2,34 +2,18 @@
 using JackosAdventure.UI.Controls;
 using engenious;
 using engenious.Graphics;
+using engenious.UI.Controls;
+using engenious.UI;
 
 namespace JackosAdventure.UI.Screens
 {
-    internal class GameScreen : Control
+    internal class GameScreen : Screen
     {
-        private readonly GameControl? gameControl;
-
-        public GameScreen(ScreenGameComponent screenComponent) : base(screenComponent)
+        public GameScreen(ScreenComponent screenComponent) : base(screenComponent)
         {
-            gameControl = new GameControl(ScreenComponent);
             screenComponent.Game.IsMouseVisible = false;
+            Controls.Add(new GameControl(screenComponent));
         }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            gameControl?.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            base.Draw(gameTime, spriteBatch);
-            gameControl?.Draw(gameTime, spriteBatch);
-        }
-
-        public override void Dispose()
-        {
-            gameControl?.Dispose();
-        }
+        
     }
 }

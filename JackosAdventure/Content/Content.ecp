@@ -7,17 +7,37 @@
     <ContentFolder>
       <Name>fonts</Name>
       <Contents>
-        <ContentFile>
-          <Name>golem-script.spritefont</Name>
-          <Processor>SpriteFontProcessor</Processor>
-          <Importer>SpriteFontImporter</Importer>
-          <Settings />
-        </ContentFile>
+		  <ContentFile>
+			  <Name>golem-script.spritefont</Name>
+			  <Processor>SpriteFontProcessor</Processor>
+			  <Importer>SpriteFontImporter</Importer>
+			  <Settings />
+		  </ContentFile>
+
+		  <ContentFile>
+			  <Name>Text.spritefont</Name>
+			  <Processor>SpriteFontProcessor</Processor>
+			  <Importer>SpriteFontImporter</Importer>
+			  <Settings />
+		  </ContentFile>
         <ContentFile>
           <Name>Halls___.spritefont</Name>
           <Processor>SpriteFontProcessor</Processor>
           <Importer>SpriteFontImporter</Importer>
           <Settings />
+        </ContentFile>
+      </Contents>
+    </ContentFolder>
+    <ContentFolder>
+      <Name>music</Name>
+      <Contents>
+        <ContentFile>
+          <Name>Twin_Musicom-Spooky_Ride.ogg</Name>
+          <Processor>AudioProcessor</Processor>
+          <Importer>Wave Importer</Importer>
+          <Settings>
+            <OutputFormat>0</OutputFormat>
+          </Settings>
         </ContentFile>
       </Contents>
     </ContentFolder>

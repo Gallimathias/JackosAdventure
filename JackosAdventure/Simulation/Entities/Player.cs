@@ -37,12 +37,21 @@ namespace JackosAdventure.Simulation.Entities
 
         public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
+
+            var halfTexelX = 0.5f / texture2D.Width;
+            var halfTexelY = 0.5f / texture2D.Height;
+
+            var sourceRect = new RectangleF((float)currentFrame * textureSizeX / texture2D.Width + halfTexelX, (float)((int)CurrentDirection * textureSizeY) / texture2D.Height + halfTexelY, (float)textureSizeX / texture2D.Width - 2 * halfTexelX, (float)textureSizeY / texture2D.Height - halfTexelY);
+
             batch.Draw(
-                texture2D,
-                Position, Size,
-               new Rectangle(currentFrame * textureSizeX, (int)CurrentDirection * textureSizeY, textureSizeX, textureSizeY),
-                    Color.White, 0, Vector2.Zero, SpriteBatch.SpriteEffects.None, -(Position.Y + Size.Y) / 1000f
-            );
+                texture2D, Position, sourceRect,
+                Color.White, 0, Vector2.Zero, Size / sourceRect.Size, SpriteBatch.SpriteEffects.None, -(Position.Y + Size.Y) / 1000f);
+            //batch.Draw(
+            //    texture2D,
+            //    Position, Size,
+            //   new Rectangle(currentFrame * textureSizeX, (int)CurrentDirection * textureSizeY, textureSizeX, textureSizeY),
+            //        Color.White, 0, Vector2.Zero, SpriteBatch.SpriteEffects.None, -(Position.Y + Size.Y) / 1000f
+            //);
 
             if (IsMoving)
             {
